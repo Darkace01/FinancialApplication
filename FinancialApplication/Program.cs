@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -24,6 +26,11 @@ builder.Services.ConfigureIdentity();
 //JWT
 builder.Services.ConfigureAuthenticationWithJWT(builder.Configuration);
 
+builder.Services.AddHealthChecks();
+
+//Version
+builder.Services.ConfigureVersioning();
+
 var app = builder.Build();
 
 //CORS
@@ -40,6 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHealthChecks("/app/health");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

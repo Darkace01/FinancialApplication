@@ -1,5 +1,6 @@
 ﻿using FinancialApplication.Service.Contract;
 using FinancialApplication.Service.Implementation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace FinancialApplication.Extensions;
@@ -41,6 +42,14 @@ public static class ServiceExtensions
                                 })
                                 .AddEntityFrameworkStores<FinancialApplicationDbContext>()
                                 .AddDefaultTokenProviders();
+
+
+    public static void ConfigureVersioning(this IServiceCollection services) => services.AddApiVersioning(options =>
+                                {
+                                    options.ReportApiVersions = true;
+                                    options.AssumeDefaultVersionWhenUnspecified = true;
+                                    options.DefaultApiVersion = new ApiVersion(1, 0);
+                                });
     public static void ConfigureSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(swagger =>
