@@ -20,6 +20,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\FinancialApplication.Data\FinancialApplication.Data.csproj" />
 	  <ProjectReference Include="..\FinancialApplication.DTO\FinancialApplication.DTO.csproj" />
+	  <ProjectReference Include="..\FinancialApplication.Service\FinancialApplication.Service.csproj" />
 	</ItemGroup>
 
 </Project>

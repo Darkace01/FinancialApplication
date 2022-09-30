@@ -1,9 +1,16 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using FinancialApplication.Service.Contract;
+using FinancialApplication.Service.Implementation;
+using Microsoft.OpenApi.Models;
 
 namespace FinancialApplication.Extensions;
 
 public static class ServiceExtensions
-{
+{    
+    public static void ConfigureRepository(this IServiceCollection services)
+    {
+        services.AddScoped<IRepositoryServiceManager, RepositoryServiceManager>();
+        services.AddScoped<IJWTHelper, JWTHelper>();
+    }
     public static void ConfigureSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(swagger =>

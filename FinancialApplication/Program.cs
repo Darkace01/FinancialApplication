@@ -18,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 //Identity
 builder.Services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
-builder.Services.AddScoped<IJWTHelper, JWTHelper>();
+builder.Services.ConfigureRepository();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
     options =>
     {
