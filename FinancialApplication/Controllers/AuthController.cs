@@ -1,4 +1,6 @@
 ﻿
+using FinancialApplication.DTO;
+
 namespace FinancialApplication.Controllers
 {
     [ApiVersion("1.0")]
@@ -28,7 +30,7 @@ namespace FinancialApplication.Controllers
             {
                 if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
-                    statusCode = StatusCodes.Status401Unauthorized,
+                    statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = "Invalid authentication request",
                     data = null
@@ -36,16 +38,16 @@ namespace FinancialApplication.Controllers
                 var user = await _userManager.FindByNameAsync(model.username);
                 if (user == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
-                    statusCode = StatusCodes.Status401Unauthorized,
+                    statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = "Invalid username or password",
                     data = null
                 });
 
                 var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.password);
-                if(isPasswordValid != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                if (isPasswordValid != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
-                    statusCode = StatusCodes.Status401Unauthorized,
+                    statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = "Invalid username or password",
                     data = null
@@ -89,7 +91,7 @@ namespace FinancialApplication.Controllers
             {
                 if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
-                    statusCode = StatusCodes.Status401Unauthorized,
+                    statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = "Invalid authentication request",
                     data = null
@@ -97,7 +99,7 @@ namespace FinancialApplication.Controllers
                 var userExists = await _userManager.FindByNameAsync(model.username);
                 if (userExists is not null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
-                    statusCode = StatusCodes.Status401Unauthorized,
+                    statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = "User already exists",
                     data = null
@@ -113,12 +115,12 @@ namespace FinancialApplication.Controllers
                 if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
                 {
                     await _roleManager.CreateAsync(new IdentityRole(AppConstant.PublicUserRole));
-                }               
+                }
 
                 var result = await _userManager.CreateAsync(user, model.password);
                 if (result.Succeeded != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
-                    statusCode = StatusCodes.Status401Unauthorized,
+                    statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = "User creation failed. Please check user details and try again",
                     data = null
@@ -131,6 +133,175 @@ namespace FinancialApplication.Controllers
                     statusCode = StatusCodes.Status200OK,
                     hasError = false,
                     message = "User created successfully",
+                    data = null
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status500InternalServerError,
+                    hasError = true,
+                    message = "An error occured while processing your request",
+                    data = null
+                });
+            }
+        }
+
+        [HttpPost(AuthRoutes.ChangePassword)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO model)
+        {
+            try
+            {
+                if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Invalid authentication request",
+                    data = null
+                });
+
+                var userExists = await _userManager.FindByNameAsync(model.username);
+                if (userExists is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "User doesn't exists",
+                    data = null
+                });
+
+                if (string.Compare(model.currentPassword, model.newPassword) == 0) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Both passwords are the same",
+                    data = null
+                });
+
+                var isPasswordValid = await _userManager.CheckPasswordAsync(userExists, model.currentPassword);
+                if (isPasswordValid != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Invalid current password",
+                    data = null
+                });
+
+                var result = await _userManager.ChangePasswordAsync(userExists, model.currentPassword, model.newPassword);
+                if (result.Succeeded != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Password change failed. Please check user details and try again",
+                    data = null
+                });
+
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status200OK,
+                    hasError = false,
+                    message = "Password changed successfully",
+                    data = null
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status500InternalServerError,
+                    hasError = true,
+                    message = "An error occured while processing your request",
+                    data = null
+                });
+            }
+        }
+
+        [HttpPost(AuthRoutes.ResetPasswordRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RequestPasswordResetCode(PasswordRequestDTO model)
+        {
+            try
+            {
+                if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Invalid authentication request",
+                    data = null
+                });
+
+                var userExist = await _userManager.FindByEmailAsync(model.email);
+                if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "User doesn't exists",
+                    data = null
+                });
+
+                var code = await _userManager.GeneratePasswordResetTokenAsync(userExist);
+                // Send Code later
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status200OK,
+                    hasError = false,
+                    message = "Password reset code sent successfully",
+                    data = null
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status500InternalServerError,
+                    hasError = true,
+                    message = "An error occured while processing your request",
+                    data = null
+                });
+            }
+        }
+
+        [HttpPost(AuthRoutes.ResetPassword)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResetPassword(PasswordRequestCodeDTO model)
+        {
+            try
+            {
+                if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Invalid authentication request",
+                    data = null
+                });
+
+                var userExist = await _userManager.FindByEmailAsync(model.email);
+                if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "User doesn't exists",
+                    data = null
+                });
+
+                var resetPassword = await _userManager.ResetPasswordAsync(userExist, model.code, model.password);
+                if (resetPassword.Succeeded != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Password reset failed. Please check user details and try again",
+                    data = null
+                });
+
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status200OK,
+                    hasError = false,
+                    message = "Password reset successfully",
                     data = null
                 });
             }
