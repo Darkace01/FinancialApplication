@@ -1,12 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>a3f280d4-bc98-4b48-8eeb-14737ef99a32</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
 
 </Project>
