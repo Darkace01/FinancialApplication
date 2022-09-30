@@ -19,36 +19,10 @@ builder.Services.ConfigureSwagger();
 //Identity
 builder.Services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
 builder.Services.ConfigureRepository();
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
-    options =>
-    {
-        options.User.RequireUniqueEmail = true;
-        options.Password.RequiredLength = 6;
-    })
-    .AddEntityFrameworkStores<FinancialApplicationDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.ConfigureIdentity();
 
 //JWT
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-        // Adding Jwt Bearer  
-        .AddJwtBearer(options =>
-        {
-            options.SaveToken = true;
-            options.RequireHttpsMetadata = false;
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-            };
-        });
+builder.Services.ConfigureAuthenticationWithJWT(builder.Configuration);
 
 var app = builder.Build();
 

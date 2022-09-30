@@ -5,12 +5,42 @@ using Microsoft.OpenApi.Models;
 namespace FinancialApplication.Extensions;
 
 public static class ServiceExtensions
-{    
+{
     public static void ConfigureRepository(this IServiceCollection services)
     {
         services.AddScoped<IRepositoryServiceManager, RepositoryServiceManager>();
         services.AddScoped<IJWTHelper, JWTHelper>();
     }
+
+    public static void ConfigureAuthenticationWithJWT(this IServiceCollection services, IConfiguration configuration) => services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        // Adding Jwt Bearer  
+        .AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = configuration["JWT:ValidAudience"],
+                ValidIssuer = configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+            };
+        });
+
+    public static void ConfigureIdentity(this IServiceCollection services) => services.AddIdentity<ApplicationUser, IdentityRole>(
+                                options =>
+                                {
+                                    options.User.RequireUniqueEmail = true;
+                                    options.Password.RequiredLength = 6;
+                                })
+                                .AddEntityFrameworkStores<FinancialApplicationDbContext>()
+                                .AddDefaultTokenProviders();
     public static void ConfigureSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(swagger =>
