@@ -44,7 +44,7 @@ app.UseCors(x => x
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinancialApplication v1"));
 }
 
 app.UseHealthChecks("/app/health");
