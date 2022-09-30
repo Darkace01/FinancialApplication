@@ -1,4 +1,8 @@
+using FinancialApplication.DTO;
+using FinancialApplication.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+
 namespace FinancialApplication.Controllers;
 
 [ApiController]
@@ -11,21 +15,33 @@ public class WeatherForecastController : ControllerBase
 };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly IJWTHelper _jWTHelper;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IJWTHelper jWTHelper)
     {
         _logger = logger;
+        _jWTHelper = jWTHelper;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    public IActionResult Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        ApplicationUser user = new();
+        user.UserName = "test";
+        List<string> roles = new();
+        roles.Add("Admin");
+
+        var token = _jWTHelper.GenerateToken(user, roles);
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse()
         {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Authrorized",
+            data = new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            }
+        });
     }
 }

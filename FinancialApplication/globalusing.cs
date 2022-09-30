@@ -1,0 +1,9 @@
+﻿global using FinancialApplication.Data;
+global using FinancialApplication.Extensions;
+global using FinancialApplication.Models;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.IdentityModel.Tokens;
+global using System.Text;
+global using FinancialApplication.Helpers;

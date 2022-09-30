@@ -1,11 +1,3 @@
-using FinancialApplication.Data;
-using FinancialApplication.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,9 +15,10 @@ builder.Services.AddCors();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.ConfigureSwagger();
+builder.Services.ConfigureSwagger();
 //Identity
 builder.Services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
+builder.Services.AddScoped<IJWTHelper, JWTHelper>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
     options =>
     {
