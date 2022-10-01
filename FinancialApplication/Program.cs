@@ -41,9 +41,9 @@ app.UseCors(x => x
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+}
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinancialApplication v1"));
-}
 
 app.UseHealthChecks("/app/health");
 app.UseHttpsRedirection();
