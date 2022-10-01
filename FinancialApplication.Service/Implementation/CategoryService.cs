@@ -29,20 +29,86 @@ public class CategoryService : ICategoryService
         return _context.SaveChangesAsync();
     }
 
-    public async Task<Category> Get(int id)
+    public async Task<CategoryDTO> Get(int id)
     {
-        return await _context.Categories.FindAsync(id);
+        var category = await _context.Categories.FindAsync(id);
+        return new CategoryDTO()
+        {
+            Id = category.Id,
+            Title = category.Title,
+            Description = category.Description,
+            IsSubcategory = category.IsSubcategory,
+            UserId = category.UserId
+        };
     }
 
-    public async Task<IEnumerable<Category>> GetAll()
+    public async Task<IEnumerable<CategoryDTO>> GetAll()
     {
-        return await _context.Categories.ToListAsync();
+        return await _context.Categories.Select(x => new CategoryDTO()
+        {
+            Id = x.Id,
+            Description = x.Description,
+            IsSubcategory = x.IsSubcategory,
+            Title = x.Title,
+            UserId = x.UserId
+        }).ToListAsync();
     }
 
-    public async Task<IEnumerable<Category>> GetByUser(string userId)
+    public async Task<IEnumerable<CategoryDTO>> GetByUser(string userId)
     {
-        return await _context.Categories.Where(c => c.UserId == userId).ToListAsync();
+        return await _context.Categories.Where(c => c.UserId == userId).Select(x => new CategoryDTO()
+        {
+            Id = x.Id,
+            Description = x.Description,
+            IsSubcategory = x.IsSubcategory,
+            Title = x.Title,
+            UserId = x.UserId
+        }).ToListAsync();
     }
 
+    public async Task<bool> IsCategoryExistForUser(string title, string userId)
+    {
+        return await _context.Categories.AnyAsync(c => c.Title == title && c.UserId == userId);
+    }
 
+    public async Task DeleteUserCategory(string userId, int categoryId)
+    {
+        var category = await _context.Categories.FindAsync(categoryId);
+        if (category.UserId == userId)
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task<CategoryDTO> GetByUserAndCategoryId(string userId, int categoryId)
+    {
+        var category = await _context.Categories.FindAsync(categoryId);
+        if (category.UserId == userId)
+        {
+            return new CategoryDTO()
+            {
+                Id = category.Id,
+                Title = category.Title,
+                Description = category.Description,
+                IsSubcategory = category.IsSubcategory,
+                UserId = category.UserId
+            };
+        }
+        return null;
+    }
+
+    public async Task UpdateUserCategory(string userId, CategoryUpdateDTO categoryUpdateDTO)
+    {
+        var category = await _context.Categories.FindAsync(categoryUpdateDTO.Id);
+        if (category.UserId == userId)
+        {
+            category.Title = categoryUpdateDTO.Title;
+            category.Description = categoryUpdateDTO.Description;
+            category.IsSubcategory = categoryUpdateDTO.IsSubcategory;
+            category.DateModified = DateTime.Now;
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+        }
+    }
 }

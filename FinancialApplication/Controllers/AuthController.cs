@@ -22,6 +22,7 @@
 
         [HttpPost(AuthRoutes.Login)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<LoginResponseDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
@@ -84,6 +85,7 @@
 
         [HttpPost(AuthRoutes.Register)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
@@ -151,6 +153,7 @@
 
         [HttpPost(AuthRoutes.ChangePassword)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO model)
         {
@@ -222,6 +225,7 @@
 
         [HttpPost(AuthRoutes.ResetPasswordRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RequestPasswordResetCode(PasswordRequestDTO model)
         {
@@ -269,6 +273,7 @@
 
         [HttpPost(AuthRoutes.ResetPassword)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPassword(PasswordRequestCodeDTO model)
         {
