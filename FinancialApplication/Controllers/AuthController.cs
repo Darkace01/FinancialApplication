@@ -71,7 +71,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError("Login", ex);
+                _logger.LogError(ex, "Login");
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -138,7 +138,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError("Register", ex);
+                _logger.LogError(ex, "Register");
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -209,7 +209,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError("ChangePassword", ex);
+                _logger.LogError(ex, "ChangePassword");
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -256,7 +256,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError("RequestPasswordResetCode", ex);
+                _logger.LogError( ex, "RequestPasswordResetCode");
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -310,7 +310,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError("ResetPassword", ex);
+                _logger.LogError( ex, "ResetPassword");
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,

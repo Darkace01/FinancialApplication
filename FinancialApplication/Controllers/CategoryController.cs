@@ -82,7 +82,7 @@ public class CategoryController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError("Create new category", ex);
+            _logger.LogError(ex, "Create new category");
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
