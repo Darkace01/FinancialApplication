@@ -10,4 +10,9 @@ public static class ApiRoutes
         public const string ResetPasswordRequest = "request-password-change";
         public const string ResetPassword = "request-password";
     }
+
+    public static class CategoryRoutes
+    {
+        public const string GetByUser = "by-user";
+    }
 }

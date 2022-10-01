@@ -1,7 +1,4 @@
-﻿
-using FinancialApplication.DTO;
-
-namespace FinancialApplication.Controllers
+﻿namespace FinancialApplication.Controllers
 {
     [ApiVersion("1.0")]
     [Route("api/v{v:apiversion}/auth")]
@@ -12,13 +9,15 @@ namespace FinancialApplication.Controllers
         private readonly IRepositoryServiceManager _repo;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger)
         {
             _jWTHelper = jWTHelper;
             _repo = repo;
             _userManager = userManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         [HttpPost(AuthRoutes.Login)]
@@ -70,8 +69,9 @@ namespace FinancialApplication.Controllers
                     }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("Login", ex);
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -136,8 +136,9 @@ namespace FinancialApplication.Controllers
                     data = null
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("Register", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -206,8 +207,9 @@ namespace FinancialApplication.Controllers
                     data = null
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("ChangePassword", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -252,8 +254,9 @@ namespace FinancialApplication.Controllers
                     data = null
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("RequestPasswordResetCode", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
@@ -305,8 +308,9 @@ namespace FinancialApplication.Controllers
                     data = null
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError("ResetPassword", ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status500InternalServerError,
