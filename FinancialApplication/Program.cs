@@ -1,3 +1,4 @@
+using Azure.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

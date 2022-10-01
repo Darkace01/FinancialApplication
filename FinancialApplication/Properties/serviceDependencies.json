@@ -7,6 +7,10 @@
       "type": "mssql",
       "connectionId": "ConnectionStrings:DefaultConnection",
       "dynamicId": null
+    },
+    "appConfig1": {
+      "type": "appConfig",
+      "connectionId": "AppConfig"
     }
   }
 }
