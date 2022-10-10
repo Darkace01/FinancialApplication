@@ -48,6 +48,11 @@ public class ExpenseService : IExpenseService
         return await _context.Expenses.Where(e => e.UserId == userId).ToListAsync();
     }
 
+    public async Task<Expense> GetByIdandUserId(int id, string userId)
+    {
+        return await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+    }
+
     public async Task<IEnumerable<Expense>> GetByUserAndCategory(string userId, int categoryId)
     {
         return await _context.Expenses.Where(e => e.UserId == userId && e.CategoryId == categoryId).ToListAsync();

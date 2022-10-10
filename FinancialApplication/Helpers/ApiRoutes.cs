@@ -18,4 +18,13 @@ public static class ApiRoutes
         public const string DeleteByUser = "user/{categoryId:int}";
         public const string UpdateByUser = "user/{categoryId:int}";
     }
+
+    public static class ExpenseRoutes
+    {
+        public const string GetByUser = "user";
+        public const string CreateByUser = "user";
+        public const string DeleteByUser = "user/{expenseId:int}";
+        public const string UpdateByUser = "user/{expenseId:int}";
+        
+    }
 }

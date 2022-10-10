@@ -7,6 +7,7 @@ public interface IExpenseService
     Task<Expense> Get(int id);
     Task<IEnumerable<Expense>> GetAll();
     Task<IEnumerable<Expense>> GetByCategory(int categoryId);
+    Task<Expense> GetByIdandUserId(int id, string userId);
     Task<IEnumerable<Expense>> GetByUser(string userId);
     Task<IEnumerable<Expense>> GetByUserAndCategory(string userId, int categoryId);
     Task Update(Expense expense);

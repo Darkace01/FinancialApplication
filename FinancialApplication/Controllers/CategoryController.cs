@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace FinancialApplication.Controllers;
+﻿namespace FinancialApplication.Controllers;
 
 [ApiVersion("1.0")]
-[Route("api/v{v:apiversion}/category")]
+[Route("api/v{v:apiversion}/categories")]
 [ApiController]
+[Authorize]
 public class CategoryController : ControllerBase
 {
     private readonly IRepositoryServiceManager _repo;
@@ -22,7 +21,6 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<Category>>), StatusCodes.Status200OK)]
-    [Authorize]
     public async Task<IActionResult> GetUsersCategories()
     {
         try
@@ -54,7 +52,6 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    [Authorize]
     public async Task<IActionResult> CreateNewUserCategory(CategoryCreateDTO model)
     {
         try
@@ -111,7 +108,6 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    [Authorize]
     public async Task<IActionResult> DeleteUserCategory(int categoryId)
     {
         try
@@ -143,7 +139,6 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    [Authorize]
     public async Task<IActionResult> UpdateUserCategory(int categoryId, CategoryUpdateDTO model)
     {
         try
