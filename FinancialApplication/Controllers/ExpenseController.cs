@@ -218,7 +218,7 @@ public class ExpenseController : ControllerBase
         }
     }
 
-    [HttpGet(ExpenseRoutes.GetByUser)]
+    [HttpGet(ExpenseRoutes.GetByExpenseIdandUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<ExpenseDTO>), StatusCodes.Status200OK)]
