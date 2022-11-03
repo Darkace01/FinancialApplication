@@ -38,6 +38,7 @@ public class CategoryService : ICategoryService
             Title = category.Title,
             Description = category.Description,
             IsSubcategory = category.IsSubcategory,
+            Icon = category.Icon,
             UserId = category.UserId
         };
     }
@@ -50,6 +51,7 @@ public class CategoryService : ICategoryService
             Description = x.Description,
             IsSubcategory = x.IsSubcategory,
             Title = x.Title,
+            Icon = x.Icon,
             UserId = x.UserId
         }).ToListAsync();
     }
@@ -62,6 +64,7 @@ public class CategoryService : ICategoryService
             Description = x.Description,
             IsSubcategory = x.IsSubcategory,
             Title = x.Title,
+            Icon = x.Icon,
             UserId = x.UserId
         }).ToListAsync();
     }
@@ -107,6 +110,7 @@ public class CategoryService : ICategoryService
             category.Description = categoryUpdateDTO.Description;
             category.IsSubcategory = categoryUpdateDTO.IsSubcategory;
             category.DateModified = DateTime.Now;
+            category.Icon = categoryUpdateDTO.Icon;
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
         }

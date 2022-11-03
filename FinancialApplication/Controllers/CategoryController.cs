@@ -80,6 +80,7 @@ public class CategoryController : ControllerBase
                 Title = model.Title,
                 UserId = user.Id,
                 Description = model.Description,
+                Icon = model.Icon,
                 IsSubcategory = model.IsSubcategory
             };
             await _repo.CategoryService.Add(category);
