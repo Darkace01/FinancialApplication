@@ -48,6 +48,22 @@ public class ExpenseService : IExpenseService
         return await _context.Expenses.Where(e => e.UserId == userId).ToListAsync();
     }
 
+    public async Task<IEnumerable<Expense>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50)
+    {
+        var expenses = _context.Expenses.Where(e => e.UserId == userId);
+        if (startDate.HasValue)
+        {
+            expenses = expenses.Where(x => x.DateAdded >= startDate);
+        }
+        if (endDate.HasValue)
+        {
+            expenses = expenses.Where(x => x.DateAdded <= endDate);
+        }
+
+        expenses = expenses.Take(take);
+        return await expenses.ToListAsync();
+    }
+
     public async Task<Expense> GetByIdandUserId(int id, string userId)
     {
         return await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);

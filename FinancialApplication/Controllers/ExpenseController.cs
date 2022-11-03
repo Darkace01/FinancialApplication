@@ -21,12 +21,30 @@ public class ExpenseController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<ExpenseDTO>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUsersExpenses()
+    public async Task<IActionResult> GetUsersExpenses(string startDateStr, string endDateStr, int take)
     {
         try
         {
             var user = await GetUser();
-            var expenses = await _repo.ExpenseService.GetByUser(user.Id);
+            var startDate = DateTime.MinValue;
+            var endDate = DateTime.MinValue;
+            if (!string.IsNullOrWhiteSpace(startDateStr))
+            {
+                if (startDateStr.Contains("/"))
+                {
+                    DateTime.TryParse(startDateStr, out startDate);
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(endDateStr))
+            {
+                if (endDateStr.Contains("/"))
+                {
+                    DateTime.TryParse(endDateStr, out endDate);
+                }
+            }
+            var total = take == 0 ? 50 : take;
+            var expenses = await _repo.ExpenseService.GetByUserWithParameters(user.Id, startDate, endDate, total);
+
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<ExpenseDTO>>()
             {
                 statusCode = StatusCodes.Status200OK,
@@ -105,12 +123,12 @@ public class ExpenseController : ControllerBase
             });
         }
     }
-
+    1
     [HttpPut(ExpenseRoutes.UpdateByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateUserExpense(int expenseId,ExpenseUpdateDTO model)
+    public async Task<IActionResult> UpdateUserExpense(int expenseId, ExpenseUpdateDTO model)
     {
         try
         {
