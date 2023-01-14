@@ -123,7 +123,7 @@ public class ExpenseController : ControllerBase
             });
         }
     }
-    1
+    
     [HttpPut(ExpenseRoutes.UpdateByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
