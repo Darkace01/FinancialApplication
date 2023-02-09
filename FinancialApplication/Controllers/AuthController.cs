@@ -36,6 +36,7 @@
                     data = null
                 });
                 var user = await _userManager.FindByNameAsync(model.username);
+                user ??= await _userManager.FindByEmailAsync(model.username);
                 if (user == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status400BadRequest,
@@ -99,6 +100,7 @@
                     data = null
                 });
                 var userExists = await _userManager.FindByNameAsync(model.username);
+                userExists ??= await _userManager.FindByEmailAsync(model.username);
                 if (userExists is not null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status400BadRequest,
