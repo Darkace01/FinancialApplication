@@ -114,7 +114,9 @@
                     Email = model.email,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = model.username,
-                    FullName = model.fullName
+                    FirstName = model.firstName,
+                    LastName = model.lastName,
+                    PhoneNumber = model.phoneNumber,
                 };
                 if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
                 {
