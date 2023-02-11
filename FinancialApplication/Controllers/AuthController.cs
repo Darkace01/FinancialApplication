@@ -66,7 +66,10 @@
                     {
                         accessToken = new JwtSecurityTokenHandler().WriteToken(token),
                         emailAddress = user.Email,
-                        fullName = user.FullName,
+                        firstName = user.FirstName,
+                        lastName = user.LastName,
+                        phoneNumber = user.PhoneNumber,
+                        fullName = $"{user.FirstName} {user.LastName}",
                         userId = user.Id
                     }
                 });

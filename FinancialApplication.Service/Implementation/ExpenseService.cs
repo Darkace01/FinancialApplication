@@ -53,11 +53,11 @@ public class ExpenseService : IExpenseService
         var expenses = _context.Expenses.Where(e => e.UserId == userId);
         if (startDate.HasValue)
         {
-            expenses = expenses.Where(x => x.DateAdded >= startDate);
+            expenses = expenses.Where(x => x.DateCreated >= startDate);
         }
         if (endDate.HasValue)
         {
-            expenses = expenses.Where(x => x.DateAdded <= endDate);
+            expenses = expenses.Where(x => x.DateCreated <= endDate);
         }
 
         expenses = expenses.Take(take);
