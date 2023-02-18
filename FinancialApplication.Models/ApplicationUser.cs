@@ -4,7 +4,24 @@ namespace FinancialApplication.Models;
 
 public class ApplicationUser : IdentityUser
 {
-    public string FullName { get; set; }
+    /// <summary>
+    /// The first name of the user.
+    /// </summary>
+    public string FirstName { get; set; }
+    /// <summary>
+    /// The last name of the user
+    /// </summary>
+    public string LastName { get; set; }
+    /// <summary>
+    /// Profile picture url of the user
+    /// </summary>
+    public string ProfilePictureUrl { get; set; }
+    /// <summary>
+    /// List of user expenses
+    /// </summary>
     public IEnumerable<Expense> Expenses { get; set; }
+    /// <summary>
+    /// List of user categories
+    /// </summary>
     public IEnumerable<Category> Categories { get; set; }
 }

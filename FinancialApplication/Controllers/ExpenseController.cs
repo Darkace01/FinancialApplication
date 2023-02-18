@@ -54,8 +54,8 @@ public class ExpenseController : ControllerBase
                     Id = x.Id,
                     Amount = x.Amount,
                     CategoryId = x.CategoryId,
-                    DateAdded = x.DateAdded,
-                    DateAddedFormatted = x.DateAdded.ToString("dd/MM/yyyy"),
+                    DateAdded = x.DateCreated,
+                    DateAddedFormatted = x.DateCreated.ToString("dd/MM/yyyy"),
                     Description = x.Description,
                     UserId = x.UserId,
                     CategoryName = x.Category?.Title
@@ -97,7 +97,7 @@ public class ExpenseController : ControllerBase
             {
                 Amount = model.Amount,
                 CategoryId = model.CategoryId,
-                DateAdded = DateTime.Now,
+                DateCreated = DateTime.Now,
                 Description = model.Description,
                 UserId = user.Id
             };
@@ -268,10 +268,10 @@ public class ExpenseController : ControllerBase
                 Amount = expense.Amount,
                 CategoryId = expense.CategoryId,
                 CategoryName = expense.Category?.Title,
-                DateAdded = expense.DateAdded,
+                DateAdded = expense.DateCreated,
                 Description = expense.Description,
                 Id = expense.Id,
-                DateAddedFormatted = expense.DateAdded.ToString("dd/MM/yyyy"),
+                DateAddedFormatted = expense.DateCreated.ToString("dd/MM/yyyy"),
                 UserId = expense.UserId
             };
 
