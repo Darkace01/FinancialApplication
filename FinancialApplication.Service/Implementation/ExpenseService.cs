@@ -8,16 +8,30 @@ public class ExpenseService : IExpenseService
         _context = context;
     }
 
-    public async Task Add(Expense expense)
+    public async Task Add(ExpenseCreateDTO model)
     {
+        var expense = new Expense()
+        {
+            Amount = model.Amount,
+            CategoryId = model.CategoryId,
+            DateCreated = DateTime.Now,
+            Description = model.Description,
+            UserId = model.UserId
+        };
         await _context.Expenses.AddAsync(expense);
         await _context.SaveChangesAsync();
     }
 
-    public async Task Update(Expense expense)
+    public async Task Update(ExpenseDTO expense)
     {
-        expense.DateModified = DateTime.Now;
-        _context.Expenses.Update(expense);
+        var expenseToUpdate = await _context.Expenses.FindAsync(expense.Id);
+        expenseToUpdate.Title = expense.Title;
+        expenseToUpdate.Description = expense.Description;
+        expenseToUpdate.Amount = expense.Amount;
+        expenseToUpdate.CategoryId = expense.CategoryId;
+        expenseToUpdate.DateModified = DateTime.Now;
+        _context.Expenses.Update(expenseToUpdate);
+
         await _context.SaveChangesAsync();
     }
 
@@ -48,7 +62,7 @@ public class ExpenseService : IExpenseService
         return await _context.Expenses.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<Expense>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50)
+    public async Task<IEnumerable<ExpenseDTO>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50)
     {
         var expenses = _context.Expenses.Where(e => e.UserId == userId).Include(e => e.Category).AsNoTracking().AsQueryable();
         if (startDate.HasValue)
@@ -59,14 +73,36 @@ public class ExpenseService : IExpenseService
         {
             expenses = expenses.Where(x => x.DateCreated <= endDate);
         }
-
         expenses = expenses.Take(take);
-        return await expenses.ToListAsync();
+        var expenseModel = expenses.Select(x => new ExpenseDTO()
+        {
+            Id = x.Id,
+            Amount = x.Amount,
+            CategoryId = x.CategoryId,
+            DateAdded = x.DateCreated,
+            Title = x.Title,
+            Description = x.Description,
+            UserId = x.UserId,
+            CategoryName = x.Category.Title
+        });
+        return await expenseModel.ToListAsync();
     }
 
-    public async Task<Expense> GetByIdandUserId(int id, string userId)
+    public async Task<ExpenseDTO> GetByIdandUserId(int id, string userId)
     {
-        return await _context.Expenses.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+        return await _context.Expenses.Include(x => x.Category).AsNoTracking()
+            .Select(expense => new ExpenseDTO()
+            {
+                Amount = expense.Amount,
+                CategoryId = expense.CategoryId,
+                CategoryName = expense.Category.Title,
+                DateAdded = expense.DateCreated,
+                Title = expense.Title,
+                Description = expense.Description,
+                Id = expense.Id,
+                UserId = expense.UserId
+            })
+            .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
     }
 
     public async Task<IEnumerable<Expense>> GetByUserAndCategory(string userId, int categoryId)

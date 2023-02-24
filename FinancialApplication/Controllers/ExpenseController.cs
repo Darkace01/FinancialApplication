@@ -32,14 +32,14 @@ public class ExpenseController : ControllerBase
             {
                 if (startDateStr.Contains("/"))
                 {
-                    DateTime.TryParse(startDateStr, out startDate);
+                    _ = DateTime.TryParse(startDateStr, out startDate);
                 }
             }
             if (!string.IsNullOrWhiteSpace(endDateStr))
             {
                 if (endDateStr.Contains("/"))
                 {
-                    DateTime.TryParse(endDateStr, out endDate);
+                    _ = DateTime.TryParse(endDateStr, out endDate);
                 }
             }
             var total = take == 0 ? 50 : take;
@@ -49,17 +49,7 @@ public class ExpenseController : ControllerBase
             {
                 statusCode = StatusCodes.Status200OK,
                 message = "Expenses retrieved successfully",
-                data = expenses.Select(x => new ExpenseDTO()
-                {
-                    Id = x.Id,
-                    Amount = x.Amount,
-                    CategoryId = x.CategoryId,
-                    DateAdded = x.DateCreated,
-                    DateAddedFormatted = x.DateCreated.ToString("dd/MM/yyyy"),
-                    Description = x.Description,
-                    UserId = x.UserId,
-                    CategoryName = x.Category?.Title
-                }),
+                data = expenses,
                 hasError = false
             });
         }
@@ -92,17 +82,17 @@ public class ExpenseController : ControllerBase
                 data = null
             });
 
-            var user = await GetUser();
-            var expense = new Expense()
+            if (string.IsNullOrWhiteSpace(model.Title)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
-                Amount = model.Amount,
-                CategoryId = model.CategoryId,
-                DateCreated = DateTime.Now,
-                Description = model.Description,
-                UserId = user.Id
-            };
+                statusCode = StatusCodes.Status200OK,
+                hasError = true,
+                message = "Title is required",
+                data = null
+            });
 
-            await _repo.ExpenseService.Add(expense);
+            var user = await GetUser();
+            model.UserId = user.Id;
+            await _repo.ExpenseService.Add(model);
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
@@ -263,24 +253,12 @@ public class ExpenseController : ControllerBase
                 data = null
             });
 
-            var expenseDTO = new ExpenseDTO()
-            {
-                Amount = expense.Amount,
-                CategoryId = expense.CategoryId,
-                CategoryName = expense.Category?.Title,
-                DateAdded = expense.DateCreated,
-                Description = expense.Description,
-                Id = expense.Id,
-                DateAddedFormatted = expense.DateCreated.ToString("dd/MM/yyyy"),
-                UserId = expense.UserId
-            };
-
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<ExpenseDTO>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = false,
                 message = "Expense retrieved successfully",
-                data = expenseDTO
+                data = expense
             });
         }
         catch (Exception ex)
