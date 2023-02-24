@@ -26,7 +26,7 @@ public class ExpenseController : ControllerBase
         try
         {
             var user = await GetUser();
-            var startDate = DateTime.MinValue;
+            var startDate = DateTime.MaxValue;
             var endDate = DateTime.MinValue;
             if (!string.IsNullOrWhiteSpace(startDateStr))
             {
