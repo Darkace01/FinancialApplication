@@ -20,7 +20,7 @@ public class CategoryController : ControllerBase
     [HttpGet(CategoryRoutes.GetByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<IEnumerable<Category>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryDTO>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUsersCategories()
     {
         try
