@@ -45,7 +45,7 @@ public class CategoryService : ICategoryService
 
     public async Task<IEnumerable<CategoryDTO>> GetAll()
     {
-        return await _context.Categories.Select(x => new CategoryDTO()
+        return await _context.Categories.AsNoTracking().Select(x => new CategoryDTO()
         {
             Id = x.Id,
             Description = x.Description,
@@ -58,7 +58,7 @@ public class CategoryService : ICategoryService
 
     public async Task<IEnumerable<CategoryDTO>> GetByUser(string userId)
     {
-        return await _context.Categories.Where(c => c.UserId == userId).Select(x => new CategoryDTO()
+        return await _context.Categories.Where(c => c.UserId == userId).AsNoTracking().Select(x => new CategoryDTO()
         {
             Id = x.Id,
             Description = x.Description,
@@ -71,7 +71,7 @@ public class CategoryService : ICategoryService
 
     public async Task<bool> IsCategoryExistForUser(string title, string userId)
     {
-        return await _context.Categories.AnyAsync(c => c.Title == title && c.UserId == userId);
+        return await _context.Categories.AsNoTracking().AnyAsync(c => c.Title == title && c.UserId == userId);
     }
 
     public async Task DeleteUserCategory(string userId, int categoryId)
@@ -86,7 +86,7 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryDTO> GetByUserAndCategoryId(string userId, int categoryId)
     {
-        var category = await _context.Categories.FindAsync(categoryId);
+        var category = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == categoryId);
         if (category.UserId == userId)
         {
             return new CategoryDTO()

@@ -30,27 +30,27 @@ public class ExpenseService : IExpenseService
 
     public async Task<Expense> Get(int id)
     {
-        return await _context.Expenses.FindAsync(id);
+        return await _context.Expenses.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<IEnumerable<Expense>> GetAll()
     {
-        return await _context.Expenses.ToListAsync();
+        return await _context.Expenses.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<Expense>> GetByCategory(int categoryId)
     {
-        return await _context.Expenses.Where(e => e.CategoryId == categoryId).ToListAsync();
+        return await _context.Expenses.Where(e => e.CategoryId == categoryId).AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<Expense>> GetByUser(string userId)
     {
-        return await _context.Expenses.Where(e => e.UserId == userId).ToListAsync();
+        return await _context.Expenses.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<Expense>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50)
     {
-        var expenses = _context.Expenses.Where(e => e.UserId == userId);
+        var expenses = _context.Expenses.Where(e => e.UserId == userId).Include(e => e.Category).AsNoTracking().AsQueryable();
         if (startDate.HasValue)
         {
             expenses = expenses.Where(x => x.DateCreated >= startDate);
@@ -66,11 +66,11 @@ public class ExpenseService : IExpenseService
 
     public async Task<Expense> GetByIdandUserId(int id, string userId)
     {
-        return await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+        return await _context.Expenses.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
     }
 
     public async Task<IEnumerable<Expense>> GetByUserAndCategory(string userId, int categoryId)
     {
-        return await _context.Expenses.Where(e => e.UserId == userId && e.CategoryId == categoryId).ToListAsync();
+        return await _context.Expenses.Where(e => e.UserId == userId && e.CategoryId == categoryId).AsNoTracking().ToListAsync();
     }
 }
