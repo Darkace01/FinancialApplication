@@ -26,8 +26,8 @@ public class ExpenseController : ControllerBase
         try
         {
             var user = await GetUser();
-            var startDate = DateTime.MaxValue;
-            var endDate = DateTime.MinValue;
+            var startDate = DateTime.MinValue;
+            var endDate = DateTime.MaxValue;
             if (!string.IsNullOrWhiteSpace(startDateStr))
             {
                 if (startDateStr.Contains("/"))
