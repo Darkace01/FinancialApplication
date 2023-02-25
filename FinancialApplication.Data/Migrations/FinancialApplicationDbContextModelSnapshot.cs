@@ -132,7 +132,7 @@ namespace FinancialApplication.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("FinancialApplication.Models.Expense", b =>
+            modelBuilder.Entity("FinancialApplication.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,7 +167,7 @@ namespace FinancialApplication.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Expenses");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -312,14 +312,14 @@ namespace FinancialApplication.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinancialApplication.Models.Expense", b =>
+            modelBuilder.Entity("FinancialApplication.Models.Transaction", b =>
                 {
                     b.HasOne("FinancialApplication.Models.Category", "Category")
-                        .WithMany("Expenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("FinancialApplication.Models.ApplicationUser", "User")
-                        .WithMany("Expenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Category");
@@ -382,12 +382,12 @@ namespace FinancialApplication.Data.Migrations
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("Expenses");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("FinancialApplication.Models.Category", b =>
                 {
-                    b.Navigation("Expenses");
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

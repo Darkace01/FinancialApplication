@@ -1,6 +1,6 @@
 ﻿namespace FinancialApplication.DTO;
 
-public class ExpenseDTO
+public class TransactionDTO
 {
     public int Id { get; set; }
     public string Title { get; set; }
@@ -14,7 +14,7 @@ public class ExpenseDTO
     public string UserId { get; set; }
 }
 
-public class ExpenseCreateDTO
+public class TransactionCreateDTO
 {
     public string Title { get; set; }
     public string Description { get; set; }
@@ -23,7 +23,7 @@ public class ExpenseCreateDTO
     public string UserId { get; set; }
 }
 
-public class ExpenseUpdateDTO
+public class TransactionUpdateDTO
 {
     public int Id { get; set; }
     public string Title { get; set; }

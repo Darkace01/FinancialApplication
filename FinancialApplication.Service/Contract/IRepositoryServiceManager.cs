@@ -3,5 +3,5 @@
 public interface IRepositoryServiceManager
 {
     ICategoryService CategoryService { get; }
-    IExpenseService ExpenseService { get; }
+    ITransactionService TransactionService { get; }
 }

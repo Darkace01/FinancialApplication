@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinancialApplication.Data.Migrations
 {
     [DbContext(typeof(FinancialApplicationDbContext))]
-    [Migration("20220930103722_fullname")]
-    partial class fullname
+    [Migration("20230225204725_expense_to_transaction")]
+    partial class expense_to_transaction
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,7 +43,10 @@ namespace FinancialApplication.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -68,6 +71,9 @@ namespace FinancialApplication.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -109,8 +115,8 @@ namespace FinancialApplication.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsSubcategory")
                         .HasColumnType("bit");
@@ -118,7 +124,12 @@ namespace FinancialApplication.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Categories");
                 });
@@ -137,9 +148,6 @@ namespace FinancialApplication.Data.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -149,14 +157,19 @@ namespace FinancialApplication.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Expenses");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -292,13 +305,28 @@ namespace FinancialApplication.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FinancialApplication.Models.Category", b =>
+                {
+                    b.HasOne("FinancialApplication.Models.ApplicationUser", "User")
+                        .WithMany("Categories")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FinancialApplication.Models.Transaction", b =>
                 {
                     b.HasOne("FinancialApplication.Models.Category", "Category")
-                        .WithMany("Expenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("FinancialApplication.Models.ApplicationUser", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Category");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -352,9 +380,16 @@ namespace FinancialApplication.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FinancialApplication.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Transactions");
+                });
+
             modelBuilder.Entity("FinancialApplication.Models.Category", b =>
                 {
-                    b.Navigation("Expenses");
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

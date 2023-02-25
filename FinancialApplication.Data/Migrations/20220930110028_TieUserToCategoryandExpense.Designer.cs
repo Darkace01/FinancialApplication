@@ -125,7 +125,7 @@ namespace FinancialApplication.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("FinancialApplication.Models.Expense", b =>
+            modelBuilder.Entity("FinancialApplication.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -305,7 +305,7 @@ namespace FinancialApplication.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FinancialApplication.Models.Expense", b =>
+            modelBuilder.Entity("FinancialApplication.Models.Transaction", b =>
                 {
                     b.HasOne("FinancialApplication.Models.Category", "Category")
                         .WithMany("Expenses")

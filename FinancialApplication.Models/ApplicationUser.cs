@@ -19,7 +19,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// List of user expenses
     /// </summary>
-    public IEnumerable<Expense> Expenses { get; set; }
+    public IEnumerable<Transaction> Transactions { get; set; }
     /// <summary>
     /// List of user categories
     /// </summary>

@@ -2,7 +2,7 @@
 
 public class RepositoryServiceManager : IRepositoryServiceManager
 {
-    private IExpenseService _expenseService;
+    private ITransactionService _transactionService;
     private ICategoryService _categoryService;
     private readonly FinancialApplicationDbContext _context;
 
@@ -11,15 +11,15 @@ public class RepositoryServiceManager : IRepositoryServiceManager
         _context = context;
     }
 
-    public IExpenseService ExpenseService
+    public ITransactionService TransactionService
     {
         get
         {
-            if (_expenseService == null)
+            if (_transactionService == null)
             {
-                _expenseService = new ExpenseService(_context);
+                _transactionService = new TransactionService(_context);
             }
-            return _expenseService;
+            return _transactionService;
         }
     }
 

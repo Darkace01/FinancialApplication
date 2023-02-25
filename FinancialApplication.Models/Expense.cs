@@ -1,25 +1,25 @@
 ﻿namespace FinancialApplication.Models
 {
-    public class Expense: Entity
+    public class Transaction: Entity
     {
         /// <summary>
-        /// Expense title
+        /// Transaction title
         /// </summary>
         public string Title { get; set; }
         /// <summary>
-        /// Expense description
+        /// Transaction description
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// Expense amount
+        /// Transaction amount
         /// </summary>
         public decimal Amount { get; set; }
         /// <summary>
-        /// Expense category id
+        /// Transaction category id
         /// </summary>
         public int? CategoryId { get; set; }
         /// <summary>
-        /// Expense category
+        /// Transaction category
         /// </summary>
         public Category Category { get; set; }
         /// <summary>

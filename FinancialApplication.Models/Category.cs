@@ -21,7 +21,7 @@ public class Category : Entity
     /// <summary>
     /// List of expense in the category
     /// </summary>
-    public IEnumerable<Expense> Expenses { get; set; }
+    public IEnumerable<Transaction> Transactions { get; set; }
     /// <summary>
     /// User id of the category
     /// </summary>

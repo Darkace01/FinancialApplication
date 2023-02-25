@@ -1,27 +1,27 @@
 ﻿namespace FinancialApplication.Controllers;
 
 [ApiVersion("1.0")]
-[Route("api/v{v:apiversion}/expenses")]
+[Route("api/v{v:apiversion}/transactions")]
 [ApiController]
 [Authorize]
-public class ExpenseController : ControllerBase
+public class TransactionController : ControllerBase
 {
     private readonly IRepositoryServiceManager _repo;
-    private readonly ILogger<ExpenseController> _logger;
+    private readonly ILogger<TransactionController> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public ExpenseController(UserManager<ApplicationUser> userManager, ILogger<ExpenseController> logger, IRepositoryServiceManager repo)
+    public TransactionController(UserManager<ApplicationUser> userManager, ILogger<TransactionController> logger, IRepositoryServiceManager repo)
     {
         _userManager = userManager;
         _logger = logger;
         _repo = repo;
     }
 
-    [HttpGet(ExpenseRoutes.GetByUser)]
+    [HttpGet(TransactionRoutes.GetByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<IEnumerable<ExpenseDTO>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUsersExpenses(string startDateStr, string endDateStr, int take,string searchTerm)
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<TransactionDTO>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUsersTransactions(string startDateStr, string endDateStr, int take,string searchTerm)
     {
         try
         {
@@ -43,19 +43,19 @@ public class ExpenseController : ControllerBase
                 }
             }
             var total = take == 0 ? 50 : take;
-            var expenses = await _repo.ExpenseService.GetByUserWithParameters(user.Id, startDate, endDate, total,searchTerm);
+            var transactions = await _repo.TransactionService.GetByUserWithParameters(user.Id, startDate, endDate, total,searchTerm);
 
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<ExpenseDTO>>()
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<TransactionDTO>>()
             {
                 statusCode = StatusCodes.Status200OK,
-                message = "Expenses retrieved successfully",
-                data = expenses,
+                message = "Transactions retrieved successfully",
+                data = transactions,
                 hasError = false
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Fetch users expenses");
+            _logger.LogError(ex, "Fetch users transactions");
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
@@ -66,11 +66,11 @@ public class ExpenseController : ControllerBase
         }
     }
 
-    [HttpPost(ExpenseRoutes.CreateByUser)]
+    [HttpPost(TransactionRoutes.CreateByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateNewUserExpense(ExpenseCreateDTO model)
+    public async Task<IActionResult> CreateNewUserTransaction(TransactionCreateDTO model)
     {
         try
         {
@@ -92,18 +92,18 @@ public class ExpenseController : ControllerBase
 
             var user = await GetUser();
             model.UserId = user.Id;
-            await _repo.ExpenseService.Add(model);
+            await _repo.TransactionService.Add(model);
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = false,
-                message = "Expense created successfully",
+                message = "Transaction created successfully",
                 data = null
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Create new expense");
+            _logger.LogError(ex, "Create new transaction");
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
@@ -114,11 +114,11 @@ public class ExpenseController : ControllerBase
         }
     }
     
-    [HttpPut(ExpenseRoutes.UpdateByUser)]
+    [HttpPut(TransactionRoutes.UpdateByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateUserExpense(int expenseId, ExpenseUpdateDTO model)
+    public async Task<IActionResult> UpdateUserTransaction(int transactionId, TransactionUpdateDTO model)
     {
         try
         {
@@ -131,17 +131,17 @@ public class ExpenseController : ControllerBase
             });
 
             var user = await GetUser();
-            var expense = await _repo.ExpenseService.GetByIdandUserId(expenseId, user.Id);
+            var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
 
-            if (expense is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = true,
-                message = "Expense not found",
+                message = "Transaction not found",
                 data = null
             });
 
-            if (expense.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = true,
@@ -149,23 +149,23 @@ public class ExpenseController : ControllerBase
                 data = null
             });
 
-            expense.Amount = model.Amount;
-            expense.CategoryId = model.CategoryId;
-            expense.Description = model.Description;
+            transaction.Amount = model.Amount;
+            transaction.CategoryId = model.CategoryId;
+            transaction.Description = model.Description;
 
-            await _repo.ExpenseService.Update(expense);
+            await _repo.TransactionService.Update(transaction);
 
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = false,
-                message = "Expense updated successfully",
+                message = "Transaction updated successfully",
                 data = null
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Update expense");
+            _logger.LogError(ex, "Update transaction");
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
@@ -176,26 +176,26 @@ public class ExpenseController : ControllerBase
         }
     }
 
-    [HttpDelete(ExpenseRoutes.DeleteByUser)]
+    [HttpDelete(TransactionRoutes.DeleteByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeleteUserExpense(int expenseId)
+    public async Task<IActionResult> DeleteUserTransaction(int transactionId)
     {
         try
         {
             var user = await GetUser();
-            var expense = await _repo.ExpenseService.GetByIdandUserId(expenseId, user.Id);
+            var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
 
-            if (expense is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = true,
-                message = "Expense not found",
+                message = "Transaction not found",
                 data = null
             });
 
-            if (expense.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = true,
@@ -203,19 +203,19 @@ public class ExpenseController : ControllerBase
                 data = null
             });
 
-            await _repo.ExpenseService.Delete(expenseId);
+            await _repo.TransactionService.Delete(transactionId);
 
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = false,
-                message = "Expense deleted successfully",
+                message = "Transaction deleted successfully",
                 data = null
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Delete expense");
+            _logger.LogError(ex, "Delete transaction");
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
@@ -226,26 +226,26 @@ public class ExpenseController : ControllerBase
         }
     }
 
-    [HttpGet(ExpenseRoutes.GetByExpenseIdandUser)]
+    [HttpGet(TransactionRoutes.GetByTransactionIdandUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<ExpenseDTO>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUserExpense(int expenseId)
+    [ProducesResponseType(typeof(ApiResponse<TransactionDTO>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserTransaction(int transactionId)
     {
         try
         {
             var user = await GetUser();
-            var expense = await _repo.ExpenseService.GetByIdandUserId(expenseId, user.Id);
+            var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
 
-            if (expense is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<ExpenseDTO>()
+            if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = true,
-                message = "Expense not found",
+                message = "Transaction not found",
                 data = null
             });
 
-            if (expense.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<ExpenseDTO>()
+            if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = true,
@@ -253,18 +253,18 @@ public class ExpenseController : ControllerBase
                 data = null
             });
 
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<ExpenseDTO>()
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
             {
                 statusCode = StatusCodes.Status200OK,
                 hasError = false,
-                message = "Expense retrieved successfully",
-                data = expense
+                message = "Transaction retrieved successfully",
+                data = transaction
             });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Get expense");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<ExpenseDTO>()
+            _logger.LogError(ex, "Get transaction");
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<TransactionDTO>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
                 hasError = true,

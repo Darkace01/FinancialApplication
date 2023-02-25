@@ -16,6 +16,6 @@ public class FinancialApplicationDbContext : IdentityDbContext<ApplicationUser, 
         base.OnModelCreating(builder);
     }
 
-    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }
 }
