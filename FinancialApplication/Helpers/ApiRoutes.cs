@@ -22,10 +22,10 @@ public static class ApiRoutes
     public static class TransactionRoutes
     {
         public const string GetByUser = "user";
-        public const string GetByTransactionIdandUser = "user/{expenseId:int}";
+        public const string GetByTransactionIdandUser = "user/{transactionId:int}";
         public const string CreateByUser = "user";
-        public const string DeleteByUser = "user/{expenseId:int}";
-        public const string UpdateByUser = "user/{expenseId:int}";
+        public const string DeleteByUser = "user/{transactionId:int}";
+        public const string UpdateByUser = "user/{transactionId:int}";
         
     }
 }
