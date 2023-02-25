@@ -62,7 +62,7 @@ public class ExpenseService : IExpenseService
         return await _context.Expenses.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<ExpenseDTO>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50)
+    public async Task<IEnumerable<ExpenseDTO>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50,string query = "")
     {
         var expenses = _context.Expenses.Where(e => e.UserId == userId).Include(e => e.Category).AsNoTracking().AsQueryable();
         if (startDate.HasValue)
@@ -72,6 +72,15 @@ public class ExpenseService : IExpenseService
         if (endDate.HasValue)
         {
             expenses = expenses.Where(x => x.DateCreated <= endDate);
+        }
+        query = query.ToLower();
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            expenses = expenses.Where(x =>
+            x.Title.ToLower().Contains(query)
+            || x.Description.ToLower().Contains(query)
+            || x.Category.Title.ToLower().Contains(query)
+            );
         }
         expenses = expenses.Take(take);
         var expenseModel = expenses.Select(x => new ExpenseDTO()

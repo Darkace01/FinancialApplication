@@ -21,7 +21,7 @@ public class ExpenseController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<ExpenseDTO>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUsersExpenses(string startDateStr, string endDateStr, int take)
+    public async Task<IActionResult> GetUsersExpenses(string startDateStr, string endDateStr, int take,string searchTerm)
     {
         try
         {
@@ -43,7 +43,7 @@ public class ExpenseController : ControllerBase
                 }
             }
             var total = take == 0 ? 50 : take;
-            var expenses = await _repo.ExpenseService.GetByUserWithParameters(user.Id, startDate, endDate, total);
+            var expenses = await _repo.ExpenseService.GetByUserWithParameters(user.Id, startDate, endDate, total,searchTerm);
 
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<ExpenseDTO>>()
             {

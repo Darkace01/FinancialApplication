@@ -10,6 +10,6 @@ public interface IExpenseService
     Task<ExpenseDTO> GetByIdandUserId(int id, string userId);
     Task<IEnumerable<Expense>> GetByUser(string userId);
     Task<IEnumerable<Expense>> GetByUserAndCategory(string userId, int categoryId);
-    Task<IEnumerable<ExpenseDTO>> GetByUserWithParameters(string userId, DateTime? startDate, DateTime? endDate, int take = 50);
+    Task<IEnumerable<ExpenseDTO>> GetByUserWithParameters(string userId, DateTime? startDate, DateTime? endDate, int take = 50,string query = "");
     Task Update(ExpenseDTO expense);
 }
