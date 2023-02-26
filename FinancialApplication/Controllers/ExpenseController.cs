@@ -30,16 +30,16 @@ public class TransactionController : ControllerBase
             var endDate = DateTime.MaxValue;
             if (!string.IsNullOrWhiteSpace(startDateStr))
             {
-                if (startDateStr.Contains("/"))
+                if (startDateStr.Contains('/'))
                 {
-                    _ = DateTime.TryParse(startDateStr, out startDate);
+                    startDate = CommonHelpers.ConvertToDate(startDateStr);
                 }
             }
             if (!string.IsNullOrWhiteSpace(endDateStr))
             {
-                if (endDateStr.Contains("/"))
+                if (endDateStr.Contains('/'))
                 {
-                    _ = DateTime.TryParse(endDateStr, out endDate);
+                    endDate = CommonHelpers.ConvertToDate(endDateStr);
                 }
             }
             var total = take == 0 ? 50 : take;
