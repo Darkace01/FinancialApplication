@@ -62,7 +62,7 @@ public class TransactionService : ITransactionService
         return await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId,  DateTime? startDate, DateTime? endDate, int take = 50,string query = "")
+    public async Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime? startDate, DateTime? endDate, int take = 50, string query = "")
     {
         var transactions = _context.Transactions.Where(e => e.UserId == userId).Include(e => e.Category).AsNoTracking().AsQueryable();
         if (startDate.HasValue)
@@ -73,9 +73,9 @@ public class TransactionService : ITransactionService
         {
             transactions = transactions.Where(x => x.DateCreated <= endDate);
         }
-        query = query.ToLower();
         if (!string.IsNullOrWhiteSpace(query))
         {
+            query = query.ToLower();
             transactions = transactions.Where(x =>
             x.Title.ToLower().Contains(query)
             || x.Description.ToLower().Contains(query)
