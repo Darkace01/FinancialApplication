@@ -48,7 +48,7 @@ public class TransactionController : ControllerBase
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<TransactionDTO>>()
             {
                 statusCode = StatusCodes.Status200OK,
-                message = "Transactions retrieved successfully",
+                message = $"Transactions retrieved successfully {searchTerm}",
                 data = transactions,
                 hasError = false
             });
