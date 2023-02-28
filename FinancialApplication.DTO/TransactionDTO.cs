@@ -12,6 +12,7 @@ public class TransactionDTO
     public int? CategoryId { get; set; }
     public string CategoryName { get; set; }
     public string UserId { get; set; }
+    public bool InFlow { get; set; }
 }
 
 public class TransactionCreateDTO
@@ -21,6 +22,7 @@ public class TransactionCreateDTO
     public decimal Amount { get; set; }
     public int? CategoryId { get; set; }
     public string UserId { get; set; }
+    public bool InFlow { get; set; }
 }
 
 public class TransactionUpdateDTO

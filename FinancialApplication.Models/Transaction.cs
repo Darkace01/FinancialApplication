@@ -23,6 +23,10 @@
         /// </summary>
         public Category Category { get; set; }
         /// <summary>
+        /// Money in or out of the flow
+        /// </summary>
+        public bool InFlow { get; set; } = false;
+        /// <summary>
         /// User id of the expense
         /// </summary>
         public string UserId { get; set; }

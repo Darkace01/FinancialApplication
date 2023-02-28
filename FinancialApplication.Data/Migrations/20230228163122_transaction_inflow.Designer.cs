@@ -4,6 +4,7 @@ using FinancialApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinancialApplication.Data.Migrations
 {
     [DbContext(typeof(FinancialApplicationDbContext))]
-    partial class FinancialApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228163122_transaction_inflow")]
+    partial class transaction_inflow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

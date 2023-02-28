@@ -16,7 +16,8 @@ public class TransactionService : ITransactionService
             CategoryId = model.CategoryId,
             DateCreated = DateTime.Now,
             Description = model.Description,
-            UserId = model.UserId
+            UserId = model.UserId,
+            InFlow = model.InFlow,
         };
         await _context.Transactions.AddAsync(transaction);
         await _context.SaveChangesAsync();
@@ -92,7 +93,8 @@ public class TransactionService : ITransactionService
             Title = x.Title,
             Description = x.Description,
             UserId = x.UserId,
-            CategoryName = x.Category.Title
+            CategoryName = x.Category.Title,
+            InFlow = x.InFlow
         });
         return await transactionModel.ToListAsync();
     }
@@ -109,7 +111,8 @@ public class TransactionService : ITransactionService
                 Title = transaction.Title,
                 Description = transaction.Description,
                 Id = transaction.Id,
-                UserId = transaction.UserId
+                UserId = transaction.UserId,
+                InFlow = transaction.InFlow
             })
             .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
     }
