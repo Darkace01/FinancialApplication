@@ -75,7 +75,7 @@ public class TransactionService : ITransactionService
         }
         if (!string.IsNullOrWhiteSpace(query))
         {
-            query = query.ToLower();
+            query = query.ToLower().Trim();
             transactions = transactions.Where(x =>
             x.Title.ToLower().Contains(query)
             || x.Description.ToLower().Contains(query)
