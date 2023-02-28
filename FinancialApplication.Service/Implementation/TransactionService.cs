@@ -64,17 +64,13 @@ public class TransactionService : ITransactionService
         return await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime? startDate, DateTime? endDate, int take = 50, string query = "")
+    public async Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime startDate, DateTime endDate, int take = 50, string query = "")
     {
         var transactions = _context.Transactions.Where(e => e.UserId == userId).Include(e => e.Category).AsNoTracking().AsQueryable();
-        if (startDate.HasValue)
-        {
-            transactions = transactions.Where(x => x.DateCreated >= startDate);
-        }
-        if (endDate.HasValue)
-        {
-            transactions = transactions.Where(x => x.DateCreated <= endDate);
-        }
+        
+            transactions = transactions.Where(x => x.DateCreated.Date >= startDate.Date);
+            transactions = transactions.Where(x => x.DateCreated.Date <= endDate.Date);
+       
         if (!string.IsNullOrWhiteSpace(query))
         {
             query = query.ToLower().Trim();

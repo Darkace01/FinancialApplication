@@ -10,6 +10,6 @@ public interface ITransactionService
     Task<TransactionDTO> GetByIdandUserId(int id, string userId);
     Task<IEnumerable<Transaction>> GetByUser(string userId);
     Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId);
-    Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime? startDate, DateTime? endDate, int take = 50,string query = "");
+    Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime startDate, DateTime endDate, int take = 50,string query = "");
     Task Update(TransactionDTO transaction);
 }
