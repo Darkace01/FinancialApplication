@@ -18,6 +18,7 @@ public class TransactionService : ITransactionService
             Description = model.Description,
             UserId = model.UserId,
             InFlow = model.InFlow,
+            Title = model.Title
         };
         await _context.Transactions.AddAsync(transaction);
         await _context.SaveChangesAsync();
