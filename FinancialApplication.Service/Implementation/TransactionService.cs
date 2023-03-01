@@ -80,7 +80,8 @@ public class TransactionService : ITransactionService
             || x.Category.Title.ToLower().Contains(query)
             );
         }
-        transactions = transactions.Take(take);
+        transactions = transactions.OrderByDescending(x => x.DateCreated)
+            .Take(take);
         var transactionModel = transactions.Select(x => new TransactionDTO()
         {
             Id = x.Id,
