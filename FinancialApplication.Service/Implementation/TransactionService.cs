@@ -127,7 +127,8 @@ public class TransactionService : ITransactionService
         var totalOutflow = transactions.Where(x => x.InFlow == false && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
         var balance = totalInflow - totalOutflow;
         //with percentage
-        var percentage = (balance == 0 || totalInflow == 0) ? 0 : (balance / totalInflow) * 100;
+        var percentage = (balance == 0 || totalInflow == 0) ? 0 : Math.Round((balance / totalInflow) * 100,2);
+
         return new ClientTransactionBalance()
         {
             Balance = balance,
