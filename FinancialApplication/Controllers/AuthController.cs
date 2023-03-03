@@ -56,6 +56,7 @@
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var token = _jWTHelper.GenerateToken(user, userRoles);
+                var clientBalance = await _repo.TransactionService.GetClientBalanceForTheMonth(user.Id, DateTime.Now);
 
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<LoginResponseDTO>()
                 {
@@ -70,7 +71,8 @@
                         lastName = user.LastName,
                         phoneNumber = user.PhoneNumber,
                         profilePictureUrl = user.ProfilePictureUrl,
-                        userId = user.Id
+                        userId = user.Id,
+                        ClientBalance = clientBalance
                     }
                 });
             }

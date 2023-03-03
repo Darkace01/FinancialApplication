@@ -26,6 +26,7 @@ public static class ApiRoutes
         public const string CreateByUser = "user";
         public const string DeleteByUser = "user/{transactionId:int}";
         public const string UpdateByUser = "user/{transactionId:int}";
+        public const string GetUserTransactionBalance = "user/balance";
         
     }
 }

@@ -119,4 +119,22 @@ public class TransactionService : ITransactionService
     {
         return await _context.Transactions.Where(e => e.UserId == userId && e.CategoryId == categoryId).AsNoTracking().ToListAsync();
     }
+
+    public async Task<ClientTransactionBalance> GetClientBalanceForTheMonth(string userId, DateTime date)
+    {
+        var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
+        var totalInflow = transactions.Where(x => x.InFlow == true && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
+        var totalOutflow = transactions.Where(x => x.InFlow == false && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
+        var balance = totalInflow - totalOutflow;
+        //with percentage
+        var percentage = (balance / totalInflow) * 100;
+        return new ClientTransactionBalance()
+        {
+            Balance = balance,
+            TotalInflow = totalInflow,
+            TotalOutflow = totalOutflow,
+            Percentage = percentage            
+        };
+    }
+
 }

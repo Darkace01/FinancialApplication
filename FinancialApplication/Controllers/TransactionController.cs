@@ -274,6 +274,38 @@ public class TransactionController : ControllerBase
         }
     }
 
+    [HttpGet(TransactionRoutes.GetUserTransactionBalance)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<ClientTransactionBalance>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserTransactionBalance()
+    {
+        try
+        {
+            var user = await GetUser();
+            var clientTransactionBalance = await _repo.TransactionService.GetClientBalanceForTheMonth(user.Id,DateTime.Now);
+
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<ClientTransactionBalance>()
+            {
+                statusCode = StatusCodes.Status200OK,
+                hasError = false,
+                message = "Transaction balance retrieved successfully",
+                data = clientTransactionBalance
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Get transaction balance");
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<ClientTransactionBalance>()
+            {
+                statusCode = StatusCodes.Status500InternalServerError,
+                hasError = true,
+                message = "An error occured while processing your request",
+                data = null
+            });
+        }
+    }
+
     #region Helpers
     private async Task<ApplicationUser> GetUser()
     {

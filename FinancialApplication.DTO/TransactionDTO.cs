@@ -34,3 +34,12 @@ public class TransactionUpdateDTO
     public int? CategoryId { get; set; }
     public string UserId { get; set; }
 }
+
+
+public class ClientTransactionBalance
+{
+    public decimal TotalInflow { get; set; }
+    public decimal TotalOutflow { get; set; }
+    public decimal Balance { get; set; }
+    public decimal Percentage { get; set; }
+}
