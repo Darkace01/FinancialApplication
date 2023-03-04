@@ -104,6 +104,15 @@
                     message = "Invalid authentication request",
                     data = null
                 });
+
+                if(!ModelState.IsValid) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Invalid authentication request",
+                    data = null
+                });
+
                 var userExists = await _userManager.FindByNameAsync(model.username);
                 userExists ??= await _userManager.FindByEmailAsync(model.username);
                 if (userExists is not null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
@@ -133,7 +142,7 @@
                 {
                     statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
-                    message = "User creation failed. Please check user details and try again",
+                    message = $"User creation failed. {result?.Errors?.FirstOrDefault().Description}",
                     data = null
                 });
 

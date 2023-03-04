@@ -1,4 +1,6 @@
-﻿namespace FinancialApplication.DTO;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FinancialApplication.DTO;
 
 public class LoginDTO
 {
@@ -22,11 +24,17 @@ public class LoginResponseDTO
 
 public class RegisterDTO
 {
+    [Required]
     public string username { get; set; }
+    [Required]
     public string email { get; set; }
+    [Required]
     public string password { get; set; }
+    [Required]
     public string firstName { get; set; }
+    [Required]
     public string lastName { get; set; }
+    [Required]
     public string phoneNumber { get; set; }
 }
 
