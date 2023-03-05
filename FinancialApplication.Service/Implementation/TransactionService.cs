@@ -157,7 +157,7 @@ public class TransactionService : ITransactionService
             var balance = totalInflow - totalOutflow;
             //with percentage
             var percentage = (balance == 0 || totalInflow == 0) ? 0 : Math.Round((balance / totalInflow) * 100, 2);
-            var monthInWord = date.ToString("MMMM", CultureInfo.InvariantCulture);
+            var monthInWord = date.ToString("MMM", CultureInfo.InvariantCulture);
 
             balanceList.Add(new ClientTransactionMonthlyBalance()
             {
