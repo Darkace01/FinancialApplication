@@ -11,6 +11,7 @@ public interface ITransactionService
     Task<IEnumerable<Transaction>> GetByUser(string userId);
     Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId);
     Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime startDate, DateTime endDate, int take = 50,string query = "");
-    Task<ClientTransactionBalance> GetClientBalanceForTheMonth(string userId, DateTime date);
+    Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId);
+    Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date);
     Task Update(TransactionDTO transaction);
 }

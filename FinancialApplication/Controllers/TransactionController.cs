@@ -1,4 +1,6 @@
-﻿namespace FinancialApplication.Controllers;
+﻿using FinancialApplication.DTO;
+
+namespace FinancialApplication.Controllers;
 
 [ApiVersion("1.0")]
 [Route("api/v{v:apiversion}/transactions")]
@@ -283,7 +285,7 @@ public class TransactionController : ControllerBase
         try
         {
             var user = await GetUser();
-            var clientTransactionBalance = await _repo.TransactionService.GetClientBalanceForTheMonth(user.Id,DateTime.Now);
+            var clientTransactionBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id,DateTime.Now);
 
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<ClientTransactionBalance>()
             {
@@ -304,6 +306,24 @@ public class TransactionController : ControllerBase
                 data = null
             });
         }
+    }
+
+    [HttpGet(TransactionRoutes.GetUserTransactionMonthlyBalance)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<List<ClientTransactionMonthlyBalance>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserBalanceForEveryMonthFromJanuaryToDecember()
+    {
+        var user = await GetUser();
+        var userMonthlyTransactionBalance = await _repo.TransactionService.GetUserBalanceForEveryMonthFromJanuaryToDecember(user.Id);
+
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<List<ClientTransactionMonthlyBalance>>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Transaction monthly balance retrieved successfully",
+            data = userMonthlyTransactionBalance
+        });
     }
 
     #region Helpers

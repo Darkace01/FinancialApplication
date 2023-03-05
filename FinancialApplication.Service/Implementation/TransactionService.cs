@@ -1,4 +1,6 @@
-﻿namespace FinancialApplication.Service.Implementation;
+﻿using System.Globalization;
+
+namespace FinancialApplication.Service.Implementation;
 
 public class TransactionService : ITransactionService
 {
@@ -120,7 +122,7 @@ public class TransactionService : ITransactionService
         return await _context.Transactions.Where(e => e.UserId == userId && e.CategoryId == categoryId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<ClientTransactionBalance> GetClientBalanceForTheMonth(string userId, DateTime date)
+    public async Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date)
     {
         var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
         var totalInflow = transactions.Where(x => x.InFlow == true && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
@@ -138,4 +140,32 @@ public class TransactionService : ITransactionService
         };
     }
 
+    public async Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId)
+    {
+        var dateRange = Enumerable.Range(1, 12).Select(x => new DateTime(DateTime.Now.Year, x, 1)).ToList();
+        var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().Select(x => new
+        {
+            x.Amount,
+            x.DateCreated,
+            x.InFlow
+        }).ToListAsync();
+        var balanceList = new List<ClientTransactionMonthlyBalance>();
+        foreach (var date in dateRange)
+        {
+            var totalInflow = transactions.Where(x => x.InFlow == true && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
+            var totalOutflow = transactions.Where(x => x.InFlow == false && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
+            var balance = totalInflow - totalOutflow;
+            //with percentage
+            var percentage = (balance == 0 || totalInflow == 0) ? 0 : Math.Round((balance / totalInflow) * 100, 2);
+            var monthInWord = date.ToString("MMMM", CultureInfo.InvariantCulture);
+
+            balanceList.Add(new ClientTransactionMonthlyBalance()
+            {
+                Balance = balance,
+                Percentage = percentage,
+                Month = monthInWord
+            });
+        }
+        return balanceList;
+    }
 }

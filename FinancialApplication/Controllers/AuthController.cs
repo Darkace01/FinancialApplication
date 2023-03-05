@@ -56,7 +56,7 @@
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var token = _jWTHelper.GenerateToken(user, userRoles);
-                var clientBalance = await _repo.TransactionService.GetClientBalanceForTheMonth(user.Id, DateTime.Now);
+                var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
 
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<LoginResponseDTO>()
                 {

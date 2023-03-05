@@ -43,3 +43,10 @@ public class ClientTransactionBalance
     public decimal Balance { get; set; }
     public decimal Percentage { get; set; }
 }
+
+public class ClientTransactionMonthlyBalance
+{
+    public string Month { get; set; }
+    public decimal Balance { get; set; }
+    public decimal Percentage { get; set; }
+}
