@@ -28,6 +28,7 @@ public static class ApiRoutes
         public const string UpdateByUser = "user/{transactionId:int}";
         public const string GetUserTransactionBalance = "user/balance";
         public const string GetUserTransactionMonthlyBalance = "user/balance/monthly";
+        public const string GetUserDashboard = "user/dashboard";
         
     }
 }

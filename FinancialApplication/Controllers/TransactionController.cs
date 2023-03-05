@@ -326,6 +326,37 @@ public class TransactionController : ControllerBase
         });
     }
 
+    [HttpGet(TransactionRoutes.GetUserDashboard)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<List<DashboardTransactionandBalance>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserDashboard()
+    {
+        var user = await GetUser();
+        var startDate = DateTime.MinValue;
+        var endDate = DateTime.MaxValue;
+        var total = 5;
+        var transactions = await _repo.TransactionService.GetByUserWithParameters(user.Id, startDate, endDate, total, "");
+        var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
+        var userMonthlyTransactionBalance = await _repo.TransactionService.GetUserBalanceForEveryMonthFromJanuaryToDecember(user.Id);
+
+        var dashboardTransactionandBalance = new DashboardTransactionandBalance()
+        {
+            Transactions = transactions.ToList(),
+            Balance = clientBalance,
+            MonthlyBalance = userMonthlyTransactionBalance
+        };
+
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<DashboardTransactionandBalance>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Dashboard retrieved successfully",
+            data = dashboardTransactionandBalance
+        });
+
+    }
+
     #region Helpers
     private async Task<ApplicationUser> GetUser()
     {

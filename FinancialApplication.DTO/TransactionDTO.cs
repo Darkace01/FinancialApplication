@@ -50,3 +50,10 @@ public class ClientTransactionMonthlyBalance
     public decimal Balance { get; set; }
     public decimal Percentage { get; set; }
 }
+
+public class DashboardTransactionandBalance
+{
+    public List<TransactionDTO> Transactions { get; set; }
+    public ClientTransactionBalance Balance { get; set; }
+    public List<ClientTransactionMonthlyBalance> MonthlyBalance { get; set; }
+}
