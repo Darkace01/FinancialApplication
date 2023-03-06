@@ -23,29 +23,14 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryDTO>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllCategories()
     {
-        try
+        var categories = await _repo.CategoryService.GetAll();
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<CategoryDTO>>()
         {
-            var user = await GetUser();
-            var categories = await _repo.CategoryService.GetAll();
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<CategoryDTO>>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                message = "Categories retrieved successfully",
-                data = categories,
-                hasError = false
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Fetch all categories", ex);
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            message = "Categories retrieved successfully",
+            data = categories,
+            hasError = false
+        });
     }
 
     #region Helpers

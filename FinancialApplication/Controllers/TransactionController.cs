@@ -23,49 +23,35 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<TransactionDTO>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUsersTransactions(string startDateStr, string endDateStr, int take,string searchTerm)
+    public async Task<IActionResult> GetUsersTransactions(string startDateStr, string endDateStr, int take, string searchTerm)
     {
-        try
+        var user = await GetUser();
+        var startDate = DateTime.MinValue;
+        var endDate = DateTime.MaxValue;
+        if (!string.IsNullOrWhiteSpace(startDateStr))
         {
-            var user = await GetUser();
-            var startDate = DateTime.MinValue;
-            var endDate = DateTime.MaxValue;
-            if (!string.IsNullOrWhiteSpace(startDateStr))
+            if (startDateStr.Contains('/'))
             {
-                if (startDateStr.Contains('/'))
-                {
-                    startDate = CommonHelpers.ConvertToDate(startDateStr);
-                }
+                startDate = CommonHelpers.ConvertToDate(startDateStr);
             }
-            if (!string.IsNullOrWhiteSpace(endDateStr))
+        }
+        if (!string.IsNullOrWhiteSpace(endDateStr))
+        {
+            if (endDateStr.Contains('/'))
             {
-                if (endDateStr.Contains('/'))
-                {
-                    endDate = CommonHelpers.ConvertToDate(endDateStr);
-                }
+                endDate = CommonHelpers.ConvertToDate(endDateStr);
             }
-            var total = take == 0 ? 50 : take;
-            var transactions = await _repo.TransactionService.GetByUserWithParameters(user.Id, startDate, endDate, total,searchTerm);
+        }
+        var total = take == 0 ? 50 : take;
+        var transactions = await _repo.TransactionService.GetByUserWithParameters(user.Id, startDate, endDate, total, searchTerm);
 
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<TransactionDTO>>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                message = $"Transactions retrieved successfully {searchTerm}",
-                data = transactions,
-                hasError = false
-            });
-        }
-        catch (Exception ex)
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<TransactionDTO>>()
         {
-            _logger.LogError(ex, "Fetch users transactions");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            message = $"Transactions retrieved successfully {searchTerm}",
+            data = transactions,
+            hasError = false
+        });
     }
 
     [HttpPost(TransactionRoutes.CreateByUser)]
@@ -74,108 +60,80 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateNewUserTransaction(TransactionCreateDTO model)
     {
-        try
+        if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
-            if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "Invalid request",
-                data = null
-            });
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Invalid request",
+            data = null
+        });
 
-            if (string.IsNullOrWhiteSpace(model.Title)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "Title is required",
-                data = null
-            });
-
-            var user = await GetUser();
-            model.UserId = user.Id;
-            await _repo.TransactionService.Add(model);
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = false,
-                message = "Transaction created successfully",
-                data = null
-            });
-        }
-        catch (Exception ex)
+        if (string.IsNullOrWhiteSpace(model.Title)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
-            _logger.LogError(ex, "Create new transaction");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Title is required",
+            data = null
+        });
+
+        var user = await GetUser();
+        model.UserId = user.Id;
+        await _repo.TransactionService.Add(model);
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Transaction created successfully",
+            data = null
+        });
     }
-    
+
     [HttpPut(TransactionRoutes.UpdateByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateUserTransaction(int transactionId, TransactionUpdateDTO model)
     {
-        try
+        if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
-            if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "Invalid request",
-                data = null
-            });
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Invalid request",
+            data = null
+        });
 
-            var user = await GetUser();
-            var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
+        var user = await GetUser();
+        var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
 
-            if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "Transaction not found",
-                data = null
-            });
-
-            if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "You are not authorized to perform this action",
-                data = null
-            });
-
-            transaction.Amount = model.Amount;
-            transaction.CategoryId = model.CategoryId;
-            transaction.Description = model.Description;
-
-            await _repo.TransactionService.Update(transaction);
-
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = false,
-                message = "Transaction updated successfully",
-                data = null
-            });
-        }
-        catch (Exception ex)
+        if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
-            _logger.LogError(ex, "Update transaction");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Transaction not found",
+            data = null
+        });
+
+        if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "You are not authorized to perform this action",
+            data = null
+        });
+
+        transaction.Amount = model.Amount;
+        transaction.CategoryId = model.CategoryId;
+        transaction.Description = model.Description;
+
+        await _repo.TransactionService.Update(transaction);
+
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Transaction updated successfully",
+            data = null
+        });
     }
 
     [HttpDelete(TransactionRoutes.DeleteByUser)]
@@ -184,48 +142,34 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteUserTransaction(int transactionId)
     {
-        try
+        var user = await GetUser();
+        var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
+
+        if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
-            var user = await GetUser();
-            var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Transaction not found",
+            data = null
+        });
 
-            if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "Transaction not found",
-                data = null
-            });
-
-            if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "You are not authorized to perform this action",
-                data = null
-            });
-
-            await _repo.TransactionService.Delete(transactionId);
-
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = false,
-                message = "Transaction deleted successfully",
-                data = null
-            });
-        }
-        catch (Exception ex)
+        if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
-            _logger.LogError(ex, "Delete transaction");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "You are not authorized to perform this action",
+            data = null
+        });
+
+        await _repo.TransactionService.Delete(transactionId);
+
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Transaction deleted successfully",
+            data = null
+        });
     }
 
     [HttpGet(TransactionRoutes.GetByTransactionIdandUser)]
@@ -234,46 +178,32 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<TransactionDTO>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserTransaction(int transactionId)
     {
-        try
+        var user = await GetUser();
+        var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
+
+        if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
         {
-            var user = await GetUser();
-            var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Transaction not found",
+            data = null
+        });
 
-            if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "Transaction not found",
-                data = null
-            });
-
-            if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = true,
-                message = "You are not authorized to perform this action",
-                data = null
-            });
-
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = false,
-                message = "Transaction retrieved successfully",
-                data = transaction
-            });
-        }
-        catch (Exception ex)
+        if (transaction.UserId != user.Id) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
         {
-            _logger.LogError(ex, "Get transaction");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<TransactionDTO>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "You are not authorized to perform this action",
+            data = null
+        });
+
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Transaction retrieved successfully",
+            data = transaction
+        });
     }
 
     [HttpGet(TransactionRoutes.GetUserTransactionBalance)]
@@ -282,30 +212,16 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<ClientTransactionBalance>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserTransactionBalance()
     {
-        try
-        {
-            var user = await GetUser();
-            var clientTransactionBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id,DateTime.Now);
+        var user = await GetUser();
+        var clientTransactionBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
 
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<ClientTransactionBalance>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = false,
-                message = "Transaction balance retrieved successfully",
-                data = clientTransactionBalance
-            });
-        }
-        catch (Exception ex)
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<ClientTransactionBalance>()
         {
-            _logger.LogError(ex, "Get transaction balance");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<ClientTransactionBalance>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Transaction balance retrieved successfully",
+            data = clientTransactionBalance
+        });
     }
 
     [HttpGet(TransactionRoutes.GetUserTransactionMonthlyBalance)]

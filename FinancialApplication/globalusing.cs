@@ -14,3 +14,5 @@ global using Microsoft.AspNetCore.Mvc;
 global using System.IdentityModel.Tokens.Jwt;
 global using static FinancialApplication.Helpers.ApiRoutes;
 global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Diagnostics;
+global using System.Net;
