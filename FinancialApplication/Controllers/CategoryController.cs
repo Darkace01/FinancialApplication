@@ -17,16 +17,16 @@ public class CategoryController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpGet(CategoryRoutes.GetByUser)]
+    [HttpGet(CategoryRoutes.GetAllCategories)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryDTO>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUsersCategories()
+    public async Task<IActionResult> GetAllCategories()
     {
         try
         {
             var user = await GetUser();
-            var categories = await _repo.CategoryService.GetByUser(user.Id);
+            var categories = await _repo.CategoryService.GetAll();
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<IEnumerable<CategoryDTO>>()
             {
                 statusCode = StatusCodes.Status200OK,
@@ -37,7 +37,7 @@ public class CategoryController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError("Fetch users categories", ex);
+            _logger.LogError("Fetch all categories", ex);
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status500InternalServerError,
@@ -48,132 +48,6 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [HttpPost(CategoryRoutes.CreateByUser)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateNewUserCategory(CategoryCreateDTO model)
-    {
-        try
-        {
-            if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status400BadRequest,
-                hasError = true,
-                message = "Invalid authentication request",
-                data = null
-            });
-            // TODO
-            var user = await GetUser();
-
-            var exists = await _repo.CategoryService.IsCategoryExistForUser(model.Title, user.Id);
-            if (exists) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status400BadRequest,
-                hasError = true,
-                message = "Category already exists",
-                data = null
-            });
-
-            var category = new Category()
-            {
-                Title = model.Title,
-                UserId = user.Id,
-                Description = model.Description,
-                Icon = model.Icon,
-                IsSubcategory = model.IsSubcategory
-            };
-            await _repo.CategoryService.Add(category);
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                message = "Category created successfully",
-                data = null,
-                hasError = false
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Create new category");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
-    }
-
-    [HttpDelete(CategoryRoutes.DeleteByUser)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeleteUserCategory(int categoryId)
-    {
-        try
-        {
-            var user = await GetUser();
-            await _repo.CategoryService.DeleteUserCategory(user.Id, categoryId);
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                message = "Category deleted successfully",
-                data = null,
-                hasError = false
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Delete category");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
-    }
-
-    [HttpPost(CategoryRoutes.UpdateByUser)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateUserCategory(int categoryId, CategoryUpdateDTO model)
-    {
-        try
-        {
-            var user = await GetUser();
-            var category = await _repo.CategoryService.GetByUserAndCategoryId(user.Id,categoryId);
-            if (category is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status400BadRequest,
-                hasError = true,
-                message = "Category not found",
-                data = null
-            });
-            await _repo.CategoryService.UpdateUserCategory(user.Id,model);
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                message = "Category updated successfully",
-                data = null,
-                hasError = false
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Update category");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<string>()
-            {
-                statusCode = StatusCodes.Status500InternalServerError,
-                hasError = true,
-                message = "An error occured while processing your request",
-                data = null
-            });
-        }
-    }
     #region Helpers
     private async Task<ApplicationUser> GetUser()
     {

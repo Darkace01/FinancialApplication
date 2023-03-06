@@ -13,10 +13,7 @@ public static class ApiRoutes
 
     public static class CategoryRoutes
     {
-        public const string GetByUser = "user";
-        public const string CreateByUser = "user";
-        public const string DeleteByUser = "user/{categoryId:int}";
-        public const string UpdateByUser = "user/{categoryId:int}";
+        public const string GetAllCategories = "";
     }
 
     public static class TransactionRoutes

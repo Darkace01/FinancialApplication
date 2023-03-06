@@ -15,19 +15,7 @@ public class Category : Entity
     /// </summary>
     public string Icon { get; set; }
     /// <summary>
-    /// Is Sub Category, if true the category is a sub category else it's a primary category
-    /// </summary>
-    public bool IsSubcategory { get; set; } = false;
-    /// <summary>
     /// List of expense in the category
     /// </summary>
     public IEnumerable<Transaction> Transactions { get; set; }
-    /// <summary>
-    /// User id of the category
-    /// </summary>
-    public string UserId { get; set; }
-    /// <summary>
-    /// User of the categpry
-    /// </summary>
-    public ApplicationUser User { get; set; }
 }

@@ -5,10 +5,6 @@ namespace FinancialApplication.DTO;
 public class ApiResponse<T>
 {
     public ApiResponse() { }
-    public ApiResponse(T data)
-    {
-        data = data;
-    }
     public bool hasError { get; set; }
     public string message { get; set; }
     public int statusCode { get; set; }
