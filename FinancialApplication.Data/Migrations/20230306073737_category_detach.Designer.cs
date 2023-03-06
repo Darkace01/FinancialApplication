@@ -4,6 +4,7 @@ using FinancialApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinancialApplication.Data.Migrations
 {
     [DbContext(typeof(FinancialApplicationDbContext))]
-    partial class FinancialApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230306073737_category_detach")]
+    partial class category_detach
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,22 +113,15 @@ namespace FinancialApplication.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Icon")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -142,7 +137,7 @@ namespace FinancialApplication.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateCreated")
@@ -152,16 +147,13 @@ namespace FinancialApplication.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("InFlow")
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -312,9 +304,7 @@ namespace FinancialApplication.Data.Migrations
                 {
                     b.HasOne("FinancialApplication.Models.Category", "Category")
                         .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("FinancialApplication.Models.ApplicationUser", "User")
                         .WithMany("Transactions")

@@ -17,7 +17,7 @@
         /// <summary>
         /// Transaction category id
         /// </summary>
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         /// <summary>
         /// Transaction category
         /// </summary>
