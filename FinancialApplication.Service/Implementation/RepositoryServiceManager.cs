@@ -4,11 +4,14 @@ public class RepositoryServiceManager : IRepositoryServiceManager
 {
     private ITransactionService _transactionService;
     private ICategoryService _categoryService;
+    private IEmailService _emailService;
     private readonly FinancialApplicationDbContext _context;
+    private readonly IConfiguration _config;
 
-    public RepositoryServiceManager(FinancialApplicationDbContext context)
+    public RepositoryServiceManager(FinancialApplicationDbContext context,IConfiguration config)
     {
         _context = context;
+        _config = config;
     }
 
     public ITransactionService TransactionService
@@ -32,6 +35,18 @@ public class RepositoryServiceManager : IRepositoryServiceManager
                 _categoryService = new CategoryService(_context);
             }
             return _categoryService;
+        }
+    }
+
+    public IEmailService EmailService
+    {
+        get
+        {
+            if (_emailService == null)
+            {
+                _emailService = new EmailService(_config);
+            }
+            return _emailService;
         }
     }
 }
