@@ -120,12 +120,10 @@ public class TransactionController : ControllerBase
             message = "You are not authorized to perform this action",
             data = null
         });
+        
+        model.UserId = user.Id;
 
-        transaction.Amount = model.Amount;
-        transaction.CategoryId = model.CategoryId;
-        transaction.Description = model.Description;
-
-        await _repo.TransactionService.Update(transaction);
+        await _repo.TransactionService.Update(model);
 
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {

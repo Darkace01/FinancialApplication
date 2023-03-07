@@ -19,11 +19,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 //Identity
 builder.Services.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
-builder.Services.ConfigureRepository();
 builder.Services.ConfigureIdentity();
+
+builder.Services.ConfigureRepository();
 
 //JWT
 builder.Services.ConfigureAuthenticationWithJWT(builder.Configuration);
+//External Authentication
+builder.Services.ConfigureExternalAuthentication(builder.Configuration);
 
 builder.Services.AddHealthChecks();
 
