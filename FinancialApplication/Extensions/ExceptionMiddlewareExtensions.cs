@@ -1,4 +1,5 @@
 ﻿using FinancialApplication.DTO;
+using System.Text.Json;
 
 namespace FinancialApplication.Extensions;
 
@@ -18,12 +19,13 @@ public static class ExceptionMiddlewareExtensions
                 if (contextFeature != null)
                 {
                     logger.LogError(contextFeature.Error, $"{contextFeature.Endpoint} Something went wrong: {contextFeature.Error}");
-                    await context.Response.WriteAsJsonAsync(new ApiResponse<string>()
+                    var response = JsonSerializer.Serialize(new ApiResponse<string>()
                     {
                         statusCode = context.Response.StatusCode,
                         message = $"Internal Server Error: {contextFeature.Error}",
                         hasError = true,
-                    }.ToString());
+                    });
+                    await context.Response.WriteAsync(response);
                 }
             });
         });
