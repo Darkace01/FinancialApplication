@@ -11,6 +11,7 @@ public class TransactionDTO
     
     public int CategoryId { get; set; }
     public string CategoryName { get; set; }
+    public string CategoryIcon { get; set; }
     public string UserId { get; set; }
     public bool InFlow { get; set; }
 }
@@ -23,6 +24,7 @@ public class TransactionCreateDTO
     public int CategoryId { get; set; }
     public string UserId { get; set; }
     public bool InFlow { get; set; }
+    public DateTime? DateAdded { get; set; }
 }
 
 public class TransactionUpdateDTO
@@ -33,6 +35,7 @@ public class TransactionUpdateDTO
     public decimal Amount { get; set; }
     public int CategoryId { get; set; }
     public string UserId { get; set; }
+    public DateTime? DateAdded { get; set; }
 }
 
 

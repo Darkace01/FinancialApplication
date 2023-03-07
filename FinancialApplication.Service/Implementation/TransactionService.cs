@@ -16,7 +16,7 @@ public class TransactionService : ITransactionService
         {
             Amount = model.Amount,
             CategoryId = model.CategoryId,
-            DateCreated = DateTime.Now,
+            DateCreated = model.DateAdded.HasValue ? model.DateAdded.Value : DateTime.Now,
             Description = model.Description,
             UserId = model.UserId,
             InFlow = model.InFlow,
@@ -26,7 +26,7 @@ public class TransactionService : ITransactionService
         await _context.SaveChangesAsync();
     }
 
-    public async Task Update(TransactionDTO transaction)
+    public async Task Update(TransactionUpdateDTO transaction)
     {
         var transactionToUpdate = await _context.Transactions.FindAsync(transaction.Id);
         transactionToUpdate.Title = transaction.Title;
@@ -34,6 +34,7 @@ public class TransactionService : ITransactionService
         transactionToUpdate.Amount = transaction.Amount;
         transactionToUpdate.CategoryId = transaction.CategoryId;
         transactionToUpdate.DateModified = DateTime.Now;
+        transactionToUpdate.DateCreated = transaction.DateAdded.HasValue ? transaction.DateAdded.Value : transactionToUpdate.DateCreated;
         _context.Transactions.Update(transactionToUpdate);
 
         await _context.SaveChangesAsync();
@@ -94,6 +95,7 @@ public class TransactionService : ITransactionService
             Description = x.Description,
             UserId = x.UserId,
             CategoryName = x.Category.Title,
+            CategoryIcon = x.Category.Icon,
             InFlow = x.InFlow
         });
         return await transactionModel.ToListAsync();
@@ -107,6 +109,7 @@ public class TransactionService : ITransactionService
                 Amount = transaction.Amount,
                 CategoryId = transaction.CategoryId,
                 CategoryName = transaction.Category.Title,
+                CategoryIcon = transaction.Category.Icon,
                 DateAdded = transaction.DateCreated,
                 Title = transaction.Title,
                 Description = transaction.Description,
