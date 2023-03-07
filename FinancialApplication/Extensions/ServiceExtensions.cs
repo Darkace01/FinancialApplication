@@ -98,4 +98,13 @@ public static class ServiceExtensions
             swagger.OperationFilter<SwaggerFileOperationFilter>();
         });
     }
+
+    public static void ConfigureExternalAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication().AddGoogle(googleOptions =>
+        {
+            googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+            googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+        });
+    }
 }
