@@ -22,9 +22,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\FinancialApplication.Commons\FinancialApplication.Commons.csproj" />
 	  <ProjectReference Include="..\FinancialApplication.Data\FinancialApplication.Data.csproj" />
 	  <ProjectReference Include="..\FinancialApplication.DTO\FinancialApplication.DTO.csproj" />
 	  <ProjectReference Include="..\FinancialApplication.Service\FinancialApplication.Service.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="EmailTemplates\EmailConfirmation.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

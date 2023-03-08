@@ -1,4 +1,6 @@
-﻿namespace FinancialApplication.Controllers
+﻿using FinancialApplication.Commons;
+
+namespace FinancialApplication.Controllers
 {
     [ApiVersion("1.0")]
     [Route("api/v{v:apiversion}/auth")]
@@ -10,14 +12,16 @@
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<AuthController> _logger;
+        private readonly IEmailTemplateHelper _emailTemplate;
 
-        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger)
+        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IEmailTemplateHelper emailTemplate)
         {
             _jWTHelper = jWTHelper;
             _repo = repo;
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
+            _emailTemplate = emailTemplate;
         }
 
         [HttpPost(AuthRoutes.Login)]
@@ -115,6 +119,7 @@
                 FirstName = model.firstName,
                 LastName = model.lastName,
                 PhoneNumber = model.phoneNumber,
+                EmailConfirmed = false
             };
             if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
             {
@@ -122,13 +127,21 @@
             }
 
             var result = await _userManager.CreateAsync(user, model.password);
-            if (result.Succeeded != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (result.Succeeded != true)
             {
-                statusCode = StatusCodes.Status400BadRequest,
-                hasError = true,
-                message = $"User creation failed. {result?.Errors?.FirstOrDefault().Description}",
-                data = null
-            });
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var emailBody = _emailTemplate.BuildEmailConfirmationTemplate(user.FirstName, code);
+
+                await _repo.EmailService.SendEmailAsync(user.Email, "Account Confirmation", emailBody);
+
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = $"User creation failed. {result?.Errors?.FirstOrDefault().Description}",
+                    data = null
+                });
+            }
 
             await _userManager.AddToRoleAsync(user, AppConstant.PublicUserRole);
 

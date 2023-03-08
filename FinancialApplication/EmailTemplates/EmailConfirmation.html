@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Email Confirmation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+            <td>
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+                    <tr>
+                        <td>
+                            <h1 style="text-align:center;">Email Confirmation</h1>
+                            <p>Dear {firstName},</p>
+                            <p>Thank you for signing up with our service! To activate your account, please use the following code:</p>
+                            <p style="text-align:center;background-color:#f5f5f5;font-family:monospace;padding:10px;margin:0;">{confirmationCode}</p>
+                            <p>If you did not create an account with us, please disregard this message.</p>
+                            <p>Thank you,</p>
+                            <p>The {companyName} Team</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

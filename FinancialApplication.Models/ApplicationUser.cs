@@ -20,4 +20,9 @@ public class ApplicationUser : IdentityUser
     /// List of user expenses
     /// </summary>
     public IEnumerable<Transaction> Transactions { get; set; }
+
+    /// <summary>
+    /// User confirmation code
+    /// </summary>
+    public IEnumerable<UserConfirmationCode> UserConfirmationCodes { get; set; }
 }

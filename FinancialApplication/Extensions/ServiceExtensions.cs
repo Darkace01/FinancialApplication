@@ -11,6 +11,7 @@ public static class ServiceExtensions
     {
         services.AddScoped<IRepositoryServiceManager, RepositoryServiceManager>();
         services.AddScoped<IJWTHelper, JWTHelper>();
+        services.AddScoped<IEmailTemplateHelper, EmailTemplateHelper>();
     }
 
     public static void ConfigureAuthenticationWithJWT(this IServiceCollection services, IConfiguration configuration) => services.AddAuthentication(options =>

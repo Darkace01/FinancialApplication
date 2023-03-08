@@ -14,6 +14,7 @@ public class FinancialApplicationDbContext : IdentityDbContext<ApplicationUser, 
 
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<UserConfirmationCode> UserConfirmationCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -75,6 +76,39 @@ public class FinancialApplicationDbContext : IdentityDbContext<ApplicationUser, 
             .HasIndex(c => c.Title)
             .IsUnique();
         base.OnModelCreating(modelBuilder);
+
+        // User Confirmation Code
+        modelBuilder.Entity<UserConfirmationCode>()
+            .HasKey(ucc => ucc.Id);
+        modelBuilder.Entity<UserConfirmationCode>()
+            .Property(ucc => ucc.Id)
+            .ValueGeneratedOnAdd();
+        modelBuilder.Entity<UserConfirmationCode>()
+            .Property(ucc => ucc.Code)
+            .HasMaxLength(6)
+            .IsRequired();
+        modelBuilder.Entity<UserConfirmationCode>()
+            .Property(ucc => ucc.ExpiryDate)
+            .HasColumnType("datetime")
+            .IsRequired();
+
+        modelBuilder.Entity<UserConfirmationCode>()
+            .HasOne(ucc => ucc.User)
+            .WithMany(u => u.UserConfirmationCodes)
+            .HasForeignKey(ucc => ucc.UserId);
+
+        // ApplicationUser
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.Transactions)
+            .WithOne(t => t.User)
+            .HasForeignKey(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.UserConfirmationCodes)
+            .WithOne(ucc => ucc.User)
+            .HasForeignKey(ucc => ucc.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
 }
