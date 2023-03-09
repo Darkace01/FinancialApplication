@@ -8,8 +8,8 @@ public class EmailService : IEmailService
     {
         _config = config;
     }
-
-    public Task SendEmailAsync(string toEmail, string subject, string message)
+    
+    public Task<bool> SendEmailAsync(string toEmail, string subject, string message)
     {
         string apiKey = _config["SendGrid:ApiSecret"];
         string fromEmail = _config["SendGrid:FromEmail"];
@@ -17,7 +17,7 @@ public class EmailService : IEmailService
         return Execute(apiKey, subject, message, toEmail, fromEmail, displayName);
     }
 
-    public static async Task Execute(string apiKey, string subject, string message, string email, string fromEmail, string displayName)
+    public static async Task<bool> Execute(string apiKey, string subject, string message, string email, string fromEmail, string displayName)
     {
         var client = new SendGridClient(apiKey);
         var msg = new SendGridMessage()
@@ -34,6 +34,7 @@ public class EmailService : IEmailService
         msg.SetClickTracking(false, false);
 
         var response = await client.SendEmailAsync(msg);
+        return response.StatusCode == System.Net.HttpStatusCode.Accepted;
 
     }
 }

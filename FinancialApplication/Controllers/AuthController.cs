@@ -129,16 +129,27 @@ namespace FinancialApplication.Controllers
             var result = await _userManager.CreateAsync(user, model.password);
             if (result.Succeeded != true)
             {
-                var code = await _repo.UserService.GenerateUserConfirmationCode(user.Id);
-                var emailBody = _emailTemplate.BuildEmailConfirmationTemplate(user.FirstName, code);
-
-                await _repo.EmailService.SendEmailAsync(user.Email, "Account Confirmation", emailBody);
-
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
                     message = $"User creation failed. {result?.Errors?.FirstOrDefault().Description}",
+                    data = null
+                });
+            }
+
+            var code = await _repo.UserService.GenerateUserConfirmationCode(user.Id);
+            var emailBody = _emailTemplate.BuildEmailConfirmationTemplate(user.FirstName, code);
+
+            var mailSent = await _repo.EmailService.SendEmailAsync(user.Email, "Account Confirmation", emailBody);
+
+            if (mailSent != true)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "User created successfully but email confirmation failed",
                     data = null
                 });
             }
@@ -195,13 +206,29 @@ namespace FinancialApplication.Controllers
             });
 
             var result = await _userManager.ChangePasswordAsync(userExists, model.currentPassword, model.newPassword);
-            if (result.Succeeded != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (result.Succeeded != true)
+            {                
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Password change failed. Please check user details and try again",
+                    data = null
+                });
+            }
+
+            var mailBody = _emailTemplate.BuildPasswordResetConfirmationTemplate(userExists.FirstName);
+            var mailSent = await _repo.EmailService.SendEmailAsync(userExists.Email, "Password Change Confirmation", mailBody);
+            if (mailSent != true)
             {
-                statusCode = StatusCodes.Status400BadRequest,
-                hasError = true,
-                message = "Password change failed. Please check user details and try again",
-                data = null
-            });
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Password changed successfully but email confirmation failed",
+                    data = null
+                });
+            }
 
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
@@ -235,7 +262,20 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
-            var code = await _userManager.GeneratePasswordResetTokenAsync(userExist);
+            var code = await _repo.UserService.GenerateUserConfirmationCode(userExist.Id);
+            var emailBody = _emailTemplate.BuildPasswordResetTemplate(userExist.FirstName, code);
+            var mailSent = await _repo.EmailService.SendEmailAsync(userExist.Email, "Password Reset", emailBody);
+            if (mailSent != true)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Password reset code sent successfully but email confirmation failed",
+                    data = null
+                });
+            }
+
             // Send Code later
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
@@ -277,6 +317,19 @@ namespace FinancialApplication.Controllers
                 message = "Password reset failed. Please check user details and try again",
                 data = null
             });
+
+            var mailBody = _emailTemplate.BuildPasswordResetConfirmationTemplate(userExist.FirstName);
+            var mailSent = await _repo.EmailService.SendEmailAsync(userExist.Email, "Password Reset Confirmation", mailBody);
+            if (mailSent != true)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Password reset successfully but email confirmation failed",
+                    data = null
+                });
+            }
 
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
