@@ -206,8 +206,8 @@ namespace FinancialApplication.Controllers
             });
 
             var result = await _userManager.ChangePasswordAsync(userExists, model.currentPassword, model.newPassword);
-            if (result.Succeeded != true)
-            {                
+            if (result.Succeeded == false)
+            {
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status400BadRequest,
@@ -309,7 +309,20 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
-            var resetPassword = await _userManager.ResetPasswordAsync(userExist, model.code, model.password);
+            var isValidCode = await _repo.UserService.VerifyUserConfirmationCode(userExist.Id, model.code);
+
+            if (isValidCode == false)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Invalid Code",
+                    data = null
+                });
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(userExist);
+            var resetPassword = await _userManager.ResetPasswordAsync(userExist, token, model.password);
             if (resetPassword.Succeeded != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,

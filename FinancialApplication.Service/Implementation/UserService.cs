@@ -9,6 +9,11 @@ public class UserService : IUserService
         _context = context;
     }
 
+    /// <summary>
+    /// Generate a random 6 digit code for user confirmation
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<string> GenerateUserConfirmationCode(string userId)
     {
         var code = CommonHelpers.GenerateRandomNumbers(6).ToString();
@@ -24,6 +29,12 @@ public class UserService : IUserService
         return code;
     }
 
+    /// <summary>
+    /// Check if user confirmation code is valid. Returns true if the code is valid else it returns false
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="code"></param>
+    /// <returns></returns>
     public async Task<bool> VerifyUserConfirmationCode(string userId, string code)
     {
         var userConfirmationCode = await _context.UserConfirmationCodes.FirstOrDefaultAsync(x => x.UserId == userId && x.Code == code);
@@ -35,9 +46,20 @@ public class UserService : IUserService
         {
             return false;
         }
+
+        userConfirmationCode.IsUsed = true;
+        _context.UserConfirmationCodes.Update(userConfirmationCode);
+
+        await _context.SaveChangesAsync();
         return true;
     }
 
+    /// <summary>
+    /// Verify User Email. Returns true if the code is valid else it returns false
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="code"></param>
+    /// <returns></returns>
     public async Task<bool> VerifyUserEmail(string userId, string code)
     {
         var userConfirmationCode = await _context.UserConfirmationCodes.FirstOrDefaultAsync(x => x.UserId == userId && x.Code == code);
@@ -52,10 +74,12 @@ public class UserService : IUserService
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
         user.EmailConfirmed = true;
         _context.Users.Update(user);
+
+        userConfirmationCode.IsUsed = true;
+        _context.UserConfirmationCodes.Update(userConfirmationCode);
+
         await _context.SaveChangesAsync();
         return true;
     }
 
-    #region Private Methods
-    #endregion
 }
