@@ -6,3 +6,4 @@ global using FinancialApplication.DTO;
 global using Microsoft.Extensions.Configuration;
 global using SendGrid;
 global using SendGrid.Helpers.Mail;
+global using FinancialApplication.Commons;

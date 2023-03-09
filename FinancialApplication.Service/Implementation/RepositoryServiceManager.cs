@@ -5,6 +5,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     private ITransactionService _transactionService;
     private ICategoryService _categoryService;
     private IEmailService _emailService;
+    private IUserService _userService;
     private readonly FinancialApplicationDbContext _context;
     private readonly IConfiguration _config;
 
@@ -47,6 +48,18 @@ public class RepositoryServiceManager : IRepositoryServiceManager
                 _emailService = new EmailService(_config);
             }
             return _emailService;
+        }
+    }
+
+    public IUserService UserService
+    {
+        get
+        {
+            if (_userService == null)
+            {
+                _userService = new UserService(_context);
+            }
+            return _userService;
         }
     }
 }

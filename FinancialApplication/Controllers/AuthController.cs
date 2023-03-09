@@ -129,7 +129,7 @@ namespace FinancialApplication.Controllers
             var result = await _userManager.CreateAsync(user, model.password);
             if (result.Succeeded != true)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var code = await _repo.UserService.GenerateUserConfirmationCode(user.Id);
                 var emailBody = _emailTemplate.BuildEmailConfirmationTemplate(user.FirstName, code);
 
                 await _repo.EmailService.SendEmailAsync(user.Email, "Account Confirmation", emailBody);
