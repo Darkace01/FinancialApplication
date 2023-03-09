@@ -12,7 +12,7 @@ public class EmailTemplateHelper : IEmailTemplateHelper
     public string BuildEmailConfirmationTemplate(string firstName, string confirmationCode)
     {
         var rootPath = _env.ContentRootPath;
-        var templatePath = Path.Combine(rootPath, $"EmailTemplates\\{AppConstant.EmailConfirmationTemplate}.html");
+        var templatePath = Path.Combine(rootPath, "EmailTemplates", $"{AppConstant.EmailConfirmationTemplate}.html");
         var body = string.Empty;
 
         using (StreamReader reader = new(templatePath))
@@ -30,7 +30,7 @@ public class EmailTemplateHelper : IEmailTemplateHelper
     public string BuildPasswordResetTemplate(string firstName, string confirmationCode)
     {
         var rootPath = _env.ContentRootPath;
-        var templatePath = Path.Combine(rootPath, $"EmailTemplates\\{AppConstant.PasswordResetTemplate}.html");
+        var templatePath = Path.Combine(rootPath, "EmailTemplates", $"{AppConstant.PasswordResetTemplate}.html");
         var body = string.Empty;
 
         using (StreamReader reader = new(templatePath))
@@ -49,7 +49,7 @@ public class EmailTemplateHelper : IEmailTemplateHelper
     public string BuildPasswordResetConfirmationTemplate(string firstName)
     {
         var rootPath = _env.ContentRootPath;
-        var templatePath = Path.Combine(rootPath, $"EmailTemplates\\{AppConstant.PasswordResetConfirmationTemplate}.html");
+        var templatePath = Path.Combine(rootPath, "EmailTemplates", $"{AppConstant.PasswordResetConfirmationTemplate}.html");
         var body = string.Empty;
 
         using (StreamReader reader = new(templatePath))
