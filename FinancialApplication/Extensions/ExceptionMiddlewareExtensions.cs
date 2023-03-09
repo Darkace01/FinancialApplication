@@ -5,6 +5,12 @@ namespace FinancialApplication.Extensions;
 
 public static class ExceptionMiddlewareExtensions
 {
+    /// <summary>
+    /// Configure exception handler
+    /// </summary>
+    /// <param name="app"></param>
+    /// <param name="logger"></param>
+    /// <param name="configuration"></param>
     public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILogger logger, IConfiguration configuration)
     {
         _ = app.UseExceptionHandler(appError =>

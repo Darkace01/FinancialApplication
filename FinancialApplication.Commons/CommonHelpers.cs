@@ -4,7 +4,11 @@ namespace FinancialApplication.Commons;
 
 public static class CommonHelpers
 {
-    // Date converter
+    /// <summary>
+    /// Convert string to date. Format: yyyy/MM/dd
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
     public static DateTime ConvertToDate(string date)
     {
         var splitedDate = date.Split('/');
@@ -12,7 +16,11 @@ public static class CommonHelpers
         DateTime convertedDate = new(int.Parse(splitedDate[0]), int.Parse(splitedDate[0]), int.Parse(splitedDate[0]));
         return convertedDate;
     }
-
+    /// <summary>
+    /// Generate random numbers
+    /// </summary>
+    /// <param name="length"></param>
+    /// <returns></returns>
     public static int GenerateRandomNumbers(int length)
     {
         Random random = new();

@@ -8,7 +8,14 @@ public class EmailService : IEmailService
     {
         _config = config;
     }
-    
+
+    /// <summary>
+    /// Send email using SendGrid
+    /// </summary>
+    /// <param name="toEmail"></param>
+    /// <param name="subject"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
     public Task<bool> SendEmailAsync(string toEmail, string subject, string message)
     {
         string apiKey = _config["SendGrid:ApiSecret"];
@@ -17,6 +24,16 @@ public class EmailService : IEmailService
         return Execute(apiKey, subject, message, toEmail, fromEmail, displayName);
     }
 
+    /// <summary>
+    /// Send email using SendGrid
+    /// </summary>
+    /// <param name="apiKey"></param>
+    /// <param name="subject"></param>
+    /// <param name="message"></param>
+    /// <param name="email"></param>
+    /// <param name="fromEmail"></param>
+    /// <param name="displayName"></param>
+    /// <returns></returns>
     public static async Task<bool> Execute(string apiKey, string subject, string message, string email, string fromEmail, string displayName)
     {
         var client = new SendGridClient(apiKey);

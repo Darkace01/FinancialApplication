@@ -7,6 +7,10 @@ namespace FinancialApplication.Extensions;
 
 public static class ServiceExtensions
 {
+    /// <summary>
+    /// Configure Dependency Injection
+    /// </summary>
+    /// <param name="services"></param>
     public static void ConfigureRepository(this IServiceCollection services)
     {
         services.AddScoped<IRepositoryServiceManager, RepositoryServiceManager>();
@@ -14,6 +18,11 @@ public static class ServiceExtensions
         services.AddScoped<IEmailTemplateHelper, EmailTemplateHelper>();
     }
 
+    /// <summary>
+    /// Configure JWT Authentication
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
     public static void ConfigureAuthenticationWithJWT(this IServiceCollection services, IConfiguration configuration) => services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -35,6 +44,10 @@ public static class ServiceExtensions
             };
         });
 
+    /// <summary>
+    /// Configure Identity
+    /// </summary>
+    /// <param name="services"></param>
     public static void ConfigureIdentity(this IServiceCollection services) => services.AddIdentity<ApplicationUser, IdentityRole>(
                                 options =>
                                 {
@@ -44,13 +57,20 @@ public static class ServiceExtensions
                                 .AddEntityFrameworkStores<FinancialApplicationDbContext>()
                                 .AddDefaultTokenProviders();
 
-
+    /// <summary>
+    /// Configure API Versioning
+    /// </summary>
+    /// <param name="services"></param>
     public static void ConfigureVersioning(this IServiceCollection services) => services.AddApiVersioning(options =>
                                 {
                                     options.ReportApiVersions = true;
                                     options.AssumeDefaultVersionWhenUnspecified = true;
                                     options.DefaultApiVersion = new ApiVersion(1, 0);
                                 });
+    /// <summary>
+    /// Configure Swagger
+    /// </summary>
+    /// <param name="services"></param>
     public static void ConfigureSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(swagger =>
@@ -100,6 +120,11 @@ public static class ServiceExtensions
         });
     }
 
+    /// <summary>
+    /// Configure External Authentication. Currently only Google Authentication
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
     public static void ConfigureExternalAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication().AddGoogle(googleOptions =>

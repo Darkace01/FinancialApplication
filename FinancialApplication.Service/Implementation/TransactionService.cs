@@ -10,6 +10,11 @@ public class TransactionService : ITransactionService
         _context = context;
     }
 
+    /// <summary>
+    /// Add a new transaction
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     public async Task Add(TransactionCreateDTO model)
     {
         var transaction = new Transaction()
@@ -26,6 +31,11 @@ public class TransactionService : ITransactionService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Update a transaction
+    /// </summary>
+    /// <param name="transaction"></param>
+    /// <returns></returns>
     public async Task Update(TransactionUpdateDTO transaction)
     {
         var transactionToUpdate = await _context.Transactions.FindAsync(transaction.Id);
@@ -40,6 +50,11 @@ public class TransactionService : ITransactionService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Delete a transaction
+    /// </summary>
+    /// <param name="transactionId"></param>
+    /// <returns></returns>
     public async Task Delete(int transactionId)
     {
         var transaction = _context.Transactions.Find(transactionId);
@@ -47,26 +62,54 @@ public class TransactionService : ITransactionService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Get a transaction by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public async Task<Transaction> Get(int id)
     {
         return await _context.Transactions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    /// <summary>
+    /// Get all transactions
+    /// </summary>
+    /// <returns></returns>
     public async Task<IEnumerable<Transaction>> GetAll()
     {
         return await _context.Transactions.AsNoTracking().ToListAsync();
     }
 
+    /// <summary>
+    /// Get all transactions by category Id
+    /// </summary>
+    /// <param name="categoryId"></param>
+    /// <returns></returns>
     public async Task<IEnumerable<Transaction>> GetByCategory(int categoryId)
     {
         return await _context.Transactions.Where(e => e.CategoryId == categoryId).AsNoTracking().ToListAsync();
     }
 
+    /// <summary>
+    /// Get all transactions by user Id
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<IEnumerable<Transaction>> GetByUser(string userId)
     {
         return await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
     }
 
+    /// <summary>
+    /// Get all transactions by user Id with parameters: startDate, endDate, take, query
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="startDate"></param>
+    /// <param name="endDate"></param>
+    /// <param name="take"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
     public async Task<IEnumerable<TransactionDTO>> GetByUserWithParameters(string userId, DateTime startDate, DateTime endDate, int take = 50, string query = "")
     {
         var transactions = _context.Transactions.Where(e => e.UserId == userId).Include(e => e.Category).AsNoTracking().AsQueryable();
@@ -101,6 +144,12 @@ public class TransactionService : ITransactionService
         return await transactionModel.ToListAsync();
     }
 
+    /// <summary>
+    /// Get all transactions by user Id and transaction id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<TransactionDTO> GetByIdandUserId(int id, string userId)
     {
         return await _context.Transactions.Include(x => x.Category).AsNoTracking()
@@ -119,12 +168,24 @@ public class TransactionService : ITransactionService
             })
             .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
     }
+    /// <summary>
+    /// Get all transactions by user Id and category Id
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="categoryId"></param>
+    /// <returns></returns>
 
     public async Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId)
     {
         return await _context.Transactions.Where(e => e.UserId == userId && e.CategoryId == categoryId).AsNoTracking().ToListAsync();
     }
 
+    /// <summary>
+    /// Get user balance for the current month
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="date"></param>
+    /// <returns></returns>
     public async Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date)
     {
         var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
@@ -143,6 +204,11 @@ public class TransactionService : ITransactionService
         };
     }
 
+    /// <summary>
+    /// Get user balance for every month from January to December
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId)
     {
         var dateRange = Enumerable.Range(1, 12).Select(x => new DateTime(DateTime.Now.Year, x, 1)).ToList();
