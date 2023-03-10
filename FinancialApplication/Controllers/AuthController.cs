@@ -277,7 +277,6 @@ namespace FinancialApplication.Controllers
                 });
             }
 
-            // Send Code later
             return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status200OK,
