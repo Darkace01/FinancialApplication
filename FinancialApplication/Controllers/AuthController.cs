@@ -13,8 +13,9 @@ namespace FinancialApplication.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<AuthController> _logger;
         private readonly IEmailTemplateHelper _emailTemplate;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IEmailTemplateHelper emailTemplate)
+        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IEmailTemplateHelper emailTemplate, IConfiguration configuration)
         {
             _jWTHelper = jWTHelper;
             _repo = repo;
@@ -22,6 +23,7 @@ namespace FinancialApplication.Controllers
             _roleManager = roleManager;
             _logger = logger;
             _emailTemplate = emailTemplate;
+            _configuration = configuration;
         }
 
         [HttpPost(AuthRoutes.Login)]
@@ -267,11 +269,13 @@ namespace FinancialApplication.Controllers
             var mailSent = await _repo.EmailService.SendEmailAsync(userExist.Email, "Password Reset", emailBody);
             if (mailSent != true)
             {
+                string apiKey = _configuration["SendGrid:ApiSecret"];
+                string fromEmail = _configuration["SendGrid:FromEmail"];
                 return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
                 {
                     statusCode = StatusCodes.Status400BadRequest,
                     hasError = true,
-                    message = "Password reset code sent successfully but email confirmation failed",
+                    message = $"Password reset code sent successfully but email confirmation failed. apiKey {apiKey} from email {fromEmail}",
                     data = null
                 });
             }
