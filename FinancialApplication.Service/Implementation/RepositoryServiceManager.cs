@@ -45,7 +45,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
         {
             if (_emailService == null)
             {
-                _emailService = new EmailService(_config);
+                _emailService = new SMTPMailService(_config);
             }
             return _emailService;
         }
