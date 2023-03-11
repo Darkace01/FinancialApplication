@@ -17,11 +17,12 @@ public class TransactionService : ITransactionService
     /// <returns></returns>
     public async Task Add(TransactionCreateDTO model)
     {
+        var convertedDate = CommonHelpers.ConvertToDate(model.DateAdded);
         var transaction = new Transaction()
         {
             Amount = model.Amount,
             CategoryId = model.CategoryId,
-            DateCreated = model.DateAdded.HasValue ? model.DateAdded.Value : DateTime.Now,
+            DateCreated = convertedDate,
             Description = model.Description,
             UserId = model.UserId,
             InFlow = model.InFlow,

@@ -255,11 +255,12 @@ namespace FinancialApplication.Controllers
             });
 
             var userExist = await _userManager.FindByEmailAsync(model.email);
+            // Ensure the api is not used to test out multiple users
             if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
-                statusCode = StatusCodes.Status400BadRequest,
-                hasError = true,
-                message = "User doesn't exists",
+                statusCode = StatusCodes.Status200OK,
+                hasError = false,
+                message = "Password reset code sent successfully",
                 data = null
             });
 

@@ -13,7 +13,7 @@ public static class CommonHelpers
     {
         var splitedDate = date.Split('/');
 
-        DateTime convertedDate = new(int.Parse(splitedDate[0]), int.Parse(splitedDate[0]), int.Parse(splitedDate[0]));
+        DateTime convertedDate = new(int.Parse(splitedDate[2]), int.Parse(splitedDate[1]), int.Parse(splitedDate[0]));
         return convertedDate;
     }
     /// <summary>

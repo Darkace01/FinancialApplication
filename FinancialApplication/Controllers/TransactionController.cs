@@ -77,6 +77,30 @@ public class TransactionController : ControllerBase
             data = null
         });
 
+        if(string.IsNullOrWhiteSpace(model.DateAdded)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Date is required",
+            data = null
+        });
+
+        if (!model.DateAdded.Contains('/')) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Incorrect Date Format. Expected dd/MM/yyyy",
+            data = null
+        });
+
+        if (model.Amount <= 0) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = true,
+            message = "Amount is required",
+            data = null
+        });
+
         var user = await GetUser();
         model.UserId = user.Id;
         await _repo.TransactionService.Add(model);
