@@ -17,7 +17,7 @@ public class TransactionService : ITransactionService
     /// <returns></returns>
     public async Task Add(TransactionCreateDTO model)
     {
-        var convertedDate = CommonHelpers.ConvertToDate(model.DateAdded);
+        var convertedDate = CommonHelpers.ConvertToDateIncludeTime(model.DateAdded);
         var transaction = new Transaction()
         {
             Amount = model.Amount,
