@@ -363,13 +363,13 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpGet(AuthRoutes.ResendConfirmationEmail)]
+        [HttpPost(AuthRoutes.ResendConfirmationEmail)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ResendEmailConfirmationCode([FromRoute] string email)
+        public async Task<IActionResult> ResendEmailConfirmationCode([FromBody] RequestEmailConfirmationDTO model)
         {
-            if(string.IsNullOrWhiteSpace(email)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if(model == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
                 hasError = true,
@@ -377,7 +377,8 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
-            var userExist = await _userManager.FindByEmailAsync(email);
+            var userExist = await _userManager.FindByEmailAsync(model.username);
+            userExist ??= await _userManager.FindByNameAsync(model.username);
             if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
@@ -422,7 +423,7 @@ namespace FinancialApplication.Controllers
                 message = "Invalid payload",
                 data = null
             });
-            var userExist = await _userManager.FindByEmailAsync(model.EmailAddress);
+            var userExist = await _userManager.FindByEmailAsync(model.email);
             if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
@@ -431,7 +432,7 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
-            var isCodeValid = await _repo.UserService.VerifyUserEmail(userExist.Id, model.Code);
+            var isCodeValid = await _repo.UserService.VerifyUserEmail(userExist.Id, model.code);
             if(isCodeValid == false) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,

@@ -57,8 +57,13 @@ public class PasswordRequestCodeDTO
     public string password { get; set; }
 }
 
+public class RequestEmailConfirmationDTO
+{
+    public string username { get; set; }
+}
+
 public class EmailConfirmationDTO
 {
-    public string EmailAddress { get; set; }
-    public string Code { get; set; }
+    public string email { get; set; }
+    public string code { get; set; }
 }
