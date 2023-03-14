@@ -56,6 +56,15 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
+            var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if (isEmailConfirmed != true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Email not confirmed",
+                data = null
+            });
+
             var userRoles = await _userManager.GetRolesAsync(user);
             var token = _jWTHelper.GenerateToken(user, userRoles);
             var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
@@ -350,6 +359,92 @@ namespace FinancialApplication.Controllers
                 statusCode = StatusCodes.Status200OK,
                 hasError = false,
                 message = "Password reset successfully",
+                data = null
+            });
+        }
+
+        [HttpGet(AuthRoutes.ResendConfirmationEmail)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResendEmailConfirmationCode([FromRoute] string email)
+        {
+            if(string.IsNullOrWhiteSpace(email)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Invalid authentication request",
+                data = null
+            });
+
+            var userExist = await _userManager.FindByEmailAsync(email);
+            if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "User doesn't exists",
+                data = null
+            });
+
+            var code = await _repo.UserService.GenerateUserConfirmationCode(userExist.Id);
+            var emailBody = _emailTemplate.BuildEmailConfirmationTemplate(userExist.FirstName, code);
+            var mailSent = await _repo.EmailService.SendEmailAsync(userExist.Email, "Email Confirmation", emailBody);
+            if (mailSent != true)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = "Email confirmation code sent successfully but email confirmation failed",
+                    data = null
+                });
+            }
+
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status200OK,
+                hasError = false,
+                message = "Email confirmation code sent successfully",
+                data = null
+            });
+        }
+
+        [HttpPost(AuthRoutes.ConfirmEmail)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> VerifyEmailConfirmationCode([FromBody] EmailConfirmationDTO model)
+        {
+            if(model  == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Invalid payload",
+                data = null
+            });
+            var userExist = await _userManager.FindByEmailAsync(model.EmailAddress);
+            if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "User doesn't exists",
+                data = null
+            });
+
+            var isCodeValid = await _repo.UserService.VerifyUserEmail(userExist.Id, model.Code);
+            if(isCodeValid == false) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Invalid code.",
+                data = null
+            });
+
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status200OK,
+                hasError = false,
+                message = "Email Confirmed.",
                 data = null
             });
         }

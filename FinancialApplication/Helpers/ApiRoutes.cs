@@ -9,6 +9,8 @@ public static class ApiRoutes
         public const string ChangePassword = "change-password";
         public const string ResetPasswordRequest = "reset-password-request";
         public const string ResetPassword = "reset-password";
+        public const string ConfirmEmail = "confirm-email";
+        public const string ResendConfirmationEmail = "resend-confirmation-email/{email}";
     }
 
     public static class CategoryRoutes
