@@ -146,6 +146,9 @@ public static class ServiceExtensions
         var cloudName = configuration["Cloudinary:CloudName"];
         var apiKey = configuration["Cloudinary:ApiKey"];
         var apiSecret = configuration["Cloudinary:ApiSecret"];
+        Console.WriteLine(cloudName ?? "n");
+        Console.WriteLine(apiKey ?? "k");
+        Console.WriteLine(apiSecret ?? "s");
 
         if (new[] { cloudName, apiKey, apiSecret }.Any(string.IsNullOrWhiteSpace))
         {
