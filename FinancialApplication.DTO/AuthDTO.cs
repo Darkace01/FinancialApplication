@@ -64,6 +64,6 @@ public class RequestEmailConfirmationDTO
 
 public class EmailConfirmationDTO
 {
-    public string email { get; set; }
+    public string username { get; set; }
     public string code { get; set; }
 }

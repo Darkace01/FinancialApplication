@@ -423,7 +423,15 @@ namespace FinancialApplication.Controllers
                 message = "Invalid payload",
                 data = null
             });
-            var userExist = await _userManager.FindByEmailAsync(model.email);
+
+            if (string.IsNullOrWhiteSpace(model.username) || string.IsNullOrWhiteSpace(model.code)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Invalid payload",
+                data = null
+            });
+            var userExist = await _userManager.FindByEmailAsync(model.username);
             if (userExist is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
