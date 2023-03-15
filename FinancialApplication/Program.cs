@@ -28,6 +28,9 @@ builder.Services.ConfigureAuthenticationWithJWT(builder.Configuration);
 //External Authentication
 builder.Services.ConfigureExternalAuthentication(builder.Configuration);
 
+//Configure Cloudinary
+builder.Services.ConfigureCloudinary(builder.Configuration);
+
 builder.Services.AddHealthChecks();
 
 //Version

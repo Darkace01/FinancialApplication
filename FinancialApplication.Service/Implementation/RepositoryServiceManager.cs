@@ -6,13 +6,18 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     private ICategoryService _categoryService;
     private IEmailService _emailService;
     private IUserService _userService;
+    private IFileStorageService _fileStorageService;
+
+
     private readonly FinancialApplicationDbContext _context;
     private readonly IConfiguration _config;
+    private readonly Cloudinary _cloudinary;
 
-    public RepositoryServiceManager(FinancialApplicationDbContext context,IConfiguration config)
+    public RepositoryServiceManager(FinancialApplicationDbContext context, IConfiguration config, Cloudinary cloudinary)
     {
         _context = context;
         _config = config;
+        _cloudinary = cloudinary;
     }
 
     public ITransactionService TransactionService
@@ -60,6 +65,18 @@ public class RepositoryServiceManager : IRepositoryServiceManager
                 _userService = new UserService(_context);
             }
             return _userService;
+        }
+    }
+
+    public IFileStorageService FileStorageService
+    {
+        get
+        {
+            if (_fileStorageService == null)
+            {
+                _fileStorageService = new FileStorageService(_cloudinary);
+            }
+            return _fileStorageService;
         }
     }
 }

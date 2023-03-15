@@ -17,6 +17,10 @@ public class ApplicationUser : IdentityUser
     /// </summary>
     public string ProfilePictureUrl { get; set; }
     /// <summary>
+    /// Cloudinary public Id
+    /// </summary>
+    public string ProfilePictureId { get; set; }
+    /// <summary>
     /// List of user expenses
     /// </summary>
     public IEnumerable<Transaction> Transactions { get; set; }

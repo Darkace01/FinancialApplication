@@ -6,4 +6,5 @@ public interface IRepositoryServiceManager
     ITransactionService TransactionService { get; }
     IEmailService EmailService { get; }
     IUserService UserService { get; }
+    IFileStorageService FileStorageService { get; }
 }

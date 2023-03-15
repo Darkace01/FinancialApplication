@@ -19,6 +19,7 @@ public class LoginResponseDTO
     public string fullName { get { return $"{firstName} {lastName}"; } }
     public string userId { get; set; }
     public string profilePictureUrl { get; set; }
+    public string ProfilePictureId { get; set; }
     public ClientTransactionBalance ClientBalance { get; set; }
 }
 

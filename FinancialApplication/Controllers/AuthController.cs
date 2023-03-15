@@ -83,7 +83,8 @@ namespace FinancialApplication.Controllers
                     phoneNumber = user.PhoneNumber,
                     profilePictureUrl = user.ProfilePictureUrl,
                     userId = user.Id,
-                    ClientBalance = clientBalance
+                    ClientBalance = clientBalance,
+                    ProfilePictureId = user.ProfilePictureId,
                 }
             });
         }

@@ -1,6 +1,8 @@
-﻿using FinancialApplication.Service.Contract;
+﻿using CloudinaryDotNet;
+using FinancialApplication.Service.Contract;
 using FinancialApplication.Service.Implementation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
 namespace FinancialApplication.Extensions;
@@ -132,5 +134,24 @@ public static class ServiceExtensions
             googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
             googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
         });
+    }
+    /// <summary>
+    /// Configure cloudinary for image upload
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public static void ConfigureCloudinary(this IServiceCollection services, IConfiguration configuration)
+    {
+        var cloudName = configuration["Cloudinary:CloudName"];
+        var apiKey = configuration["Cloudinary:ApiKey"];
+        var apiSecret = configuration["Cloudinary:ApiSecret"];
+
+        if (new[] { cloudName, apiKey, apiSecret }.Any(string.IsNullOrWhiteSpace))
+        {
+            throw new ArgumentException("Please specify Cloudinary account details!");
+        }
+
+        services.AddSingleton(new Cloudinary(new Account(cloudName, apiKey, apiSecret)));
     }
 }
