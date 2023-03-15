@@ -2,6 +2,6 @@
 
 public class FileStorageDTO
 {
-    public string FileUri { get; set; }
+    public string FileUrl { get; set; }
     public string PublicId { get; set; }
 }

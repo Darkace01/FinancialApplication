@@ -17,7 +17,7 @@ public class CategoryController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpGet(CategoryRoutes.GetAllCategories)]
+    [HttpGet(CategoryRoutes._getAllCategories)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryDTO>>), StatusCodes.Status200OK)]

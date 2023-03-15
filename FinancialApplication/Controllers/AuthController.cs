@@ -1,6 +1,4 @@
-﻿using FinancialApplication.Commons;
-
-namespace FinancialApplication.Controllers
+﻿namespace FinancialApplication.Controllers
 {
     [ApiVersion("1.0")]
     [Route("api/v{v:apiversion}/auth")]
@@ -24,7 +22,7 @@ namespace FinancialApplication.Controllers
             _emailTemplate = emailTemplate;
         }
 
-        [HttpPost(AuthRoutes.Login)]
+        [HttpPost(AuthRoutes._login)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<LoginResponseDTO>), StatusCodes.Status200OK)]
@@ -89,7 +87,7 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes.Register)]
+        [HttpPost(AuthRoutes._register)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -175,7 +173,7 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes.ChangePassword)]
+        [HttpPost(AuthRoutes._changePassword)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -250,7 +248,7 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes.ResetPasswordRequest)]
+        [HttpPost(AuthRoutes._resetPasswordRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -297,7 +295,7 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes.ResetPassword)]
+        [HttpPost(AuthRoutes._resetPassword)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -364,7 +362,7 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes.ResendConfirmationEmail)]
+        [HttpPost(AuthRoutes._resendConfirmationEmail)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -411,7 +409,7 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes.ConfirmEmail)]
+        [HttpPost(AuthRoutes._confirmEmail)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]

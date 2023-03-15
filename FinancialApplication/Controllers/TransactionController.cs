@@ -1,7 +1,4 @@
-﻿using FinancialApplication.Commons;
-using FinancialApplication.DTO;
-
-namespace FinancialApplication.Controllers;
+﻿namespace FinancialApplication.Controllers;
 
 [ApiVersion("1.0")]
 [Route("api/v{v:apiversion}/transactions")]
@@ -20,7 +17,7 @@ public class TransactionController : ControllerBase
         _repo = repo;
     }
 
-    [HttpGet(TransactionRoutes.GetByUser)]
+    [HttpGet(TransactionRoutes._getByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<TransactionDTO>>), StatusCodes.Status200OK)]
@@ -55,7 +52,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpPost(TransactionRoutes.CreateByUser)]
+    [HttpPost(TransactionRoutes._createByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -113,7 +110,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpPut(TransactionRoutes.UpdateByUser)]
+    [HttpPut(TransactionRoutes._updateByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -159,7 +156,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpDelete(TransactionRoutes.DeleteByUser)]
+    [HttpDelete(TransactionRoutes._deleteByUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -195,7 +192,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpGet(TransactionRoutes.GetByTransactionIdandUser)]
+    [HttpGet(TransactionRoutes._getByTransactionIdandUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<TransactionDTO>), StatusCodes.Status200OK)]
@@ -229,7 +226,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpGet(TransactionRoutes.GetUserTransactionBalance)]
+    [HttpGet(TransactionRoutes._getUserTransactionBalance)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<ClientTransactionBalance>), StatusCodes.Status200OK)]
@@ -247,7 +244,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpGet(TransactionRoutes.GetUserTransactionMonthlyBalance)]
+    [HttpGet(TransactionRoutes._getUserTransactionMonthlyBalance)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<List<ClientTransactionMonthlyBalance>>), StatusCodes.Status200OK)]
@@ -265,7 +262,7 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpGet(TransactionRoutes.GetUserDashboard)]
+    [HttpGet(TransactionRoutes._getUserDashboard)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<List<DashboardTransactionandBalance>>), StatusCodes.Status200OK)]

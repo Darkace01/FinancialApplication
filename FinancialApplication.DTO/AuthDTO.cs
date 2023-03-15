@@ -8,10 +8,8 @@ public class LoginDTO
     public string password { get; set; }
 }
 
-
-public class LoginResponseDTO
+public class UserBasicDetail
 {
-    public string accessToken { get; set; }
     public string emailAddress { get; set; }
     public string firstName { get; set; }
     public string lastName { get; set; }
@@ -20,6 +18,11 @@ public class LoginResponseDTO
     public string userId { get; set; }
     public string profilePictureUrl { get; set; }
     public string ProfilePictureId { get; set; }
+}
+
+public class LoginResponseDTO : UserBasicDetail
+{
+    public string accessToken { get; set; }
     public ClientTransactionBalance ClientBalance { get; set; }
 }
 

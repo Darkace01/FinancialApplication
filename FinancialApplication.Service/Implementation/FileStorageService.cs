@@ -25,7 +25,7 @@ public class FileStorageService : IFileStorageService
         }
         FileStorageDTO fileStorage = new()
         {
-            FileUri = uploadResult.SecureUrl?.AbsoluteUri,
+            FileUrl = uploadResult.SecureUrl?.AbsoluteUri,
             PublicId = uploadResult.PublicId
         };
         return fileStorage;

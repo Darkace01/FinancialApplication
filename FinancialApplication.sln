@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialApplication.Models
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialApplication.DTO", "FinancialApplication.DTO\FinancialApplication.DTO.csproj", "{BDD8E8E6-63FD-4A56-B5E1-F82677248036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialApplication.Commons", "FinancialApplication.Commons\FinancialApplication.Commons.csproj", "{5EFF8A07-5D2F-42EC-A185-B95CDC2D817F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialApplication.Commons", "FinancialApplication.Commons\FinancialApplication.Commons.csproj", "{5EFF8A07-5D2F-42EC-A185-B95CDC2D817F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
