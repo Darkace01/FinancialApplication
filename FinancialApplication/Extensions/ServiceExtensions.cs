@@ -147,11 +147,6 @@ public static class ServiceExtensions
         var cloudName = configuration["Cloudinary:CloudName"];
         var apiKey = configuration["Cloudinary:ApiKey"];
         var apiSecret = configuration["Cloudinary:ApiSecret"];
-        var cloudinarySection = configuration.GetValue<string>("Cloudinary:CloudName");
-        var str = JsonSerializer.Serialize(cloudinarySection);
-        Console.WriteLine(str ?? "n");
-        Console.WriteLine(apiKey ?? "k");
-        Console.WriteLine(apiSecret ?? "s");
 
         if (new[] { cloudName, apiKey, apiSecret }.Any(string.IsNullOrWhiteSpace))
         {
