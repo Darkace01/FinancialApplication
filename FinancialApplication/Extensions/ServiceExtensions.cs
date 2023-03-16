@@ -152,7 +152,7 @@ public static class ServiceExtensions
         {
             //TODO: Uncomment this later
             //throw new ArgumentException("Please specify Cloudinary account details!");
-        }
+        }else
         {
 
             services.AddSingleton(new Cloudinary(new Account(cloudName, apiKey, apiSecret)));
