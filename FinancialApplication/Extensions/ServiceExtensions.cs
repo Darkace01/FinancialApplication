@@ -150,9 +150,12 @@ public static class ServiceExtensions
 
         if (new[] { cloudName, apiKey, apiSecret }.Any(string.IsNullOrWhiteSpace))
         {
-            throw new ArgumentException("Please specify Cloudinary account details!");
+            //TODO: Uncomment this later
+            //throw new ArgumentException("Please specify Cloudinary account details!");
         }
+        {
 
-        services.AddSingleton(new Cloudinary(new Account(cloudName, apiKey, apiSecret)));
+            services.AddSingleton(new Cloudinary(new Account(cloudName, apiKey, apiSecret)));
+        }
     }
 }
