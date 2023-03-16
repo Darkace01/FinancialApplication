@@ -4,6 +4,7 @@ using FinancialApplication.Service.Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
+using System.Text.Json;
 
 namespace FinancialApplication.Extensions;
 
@@ -146,14 +147,16 @@ public static class ServiceExtensions
         var cloudName = configuration["Cloudinary:CloudName"];
         var apiKey = configuration["Cloudinary:ApiKey"];
         var apiSecret = configuration["Cloudinary:ApiSecret"];
-        Console.WriteLine(cloudName ?? "n");
+        var cloudinarySection = configuration.GetValue<string>("Cloudinary:CloudName");
+        var str = JsonSerializer.Serialize(cloudinarySection);
+        Console.WriteLine(str ?? "n");
         Console.WriteLine(apiKey ?? "k");
         Console.WriteLine(apiSecret ?? "s");
 
-        //if (new[] { cloudName, apiKey, apiSecret }.Any(string.IsNullOrWhiteSpace))
-        //{
-        //    throw new ArgumentException("Please specify Cloudinary account details!");
-        //}
+        if (new[] { cloudName, apiKey, apiSecret }.Any(string.IsNullOrWhiteSpace))
+        {
+            throw new ArgumentException("Please specify Cloudinary account details!");
+        }
 
         services.AddSingleton(new Cloudinary(new Account(cloudName, apiKey, apiSecret)));
     }
