@@ -72,7 +72,7 @@
             });
         }
 
-        [HttpPost(UserRoutes._userBasicDetails)]
+        [HttpGet(UserRoutes._userBasicDetails)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<UserBasicDetail>), StatusCodes.Status200OK)]
