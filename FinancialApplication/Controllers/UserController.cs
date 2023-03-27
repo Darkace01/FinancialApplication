@@ -21,18 +21,20 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<FileStorageDTO>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UploadUserProfilePicture([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadUserProfilePicture()
         {
-            if(file == null || file.Length == 0)
+
+            var request = await HttpContext.Request.ReadFormAsync();
+
+            if (!request.Files.Any()) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
-                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
-                {
-                    statusCode = StatusCodes.Status400BadRequest,
-                    message = "No file selected",
-                    data = null,
-                    hasError = true
-                });
-            }
+                statusCode = StatusCodes.Status400BadRequest,
+                message = "No file selected",
+                data = null,
+                hasError = true
+            });
+
+            var file = request.Files[0];
             var user = await GetUser();
 
             if (user.ProfilePictureId != null)
