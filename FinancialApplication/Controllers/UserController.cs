@@ -109,6 +109,36 @@
             });
         }
 
+        [HttpPost(UserRoutes._userUpdateDetails)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateUserDetails([FromBody] UserBasicDetail userBasicDetail)
+        {
+            var user = await GetUser();
+            if (user == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                message = "Invalid user",
+                hasError = true
+            });
+            user.FirstName = userBasicDetail.firstName;
+            user.LastName = userBasicDetail.lastName;
+            user.PhoneNumber = userBasicDetail.phoneNumber;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status500InternalServerError,
+                message = "Error updating user details",
+                hasError = true
+            });
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status200OK,
+                message = "User details updated successfully",
+                hasError = false
+            });
+        }
 
         #region Helpers
         private async Task<ApplicationUser> GetUser()

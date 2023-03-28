@@ -34,5 +34,6 @@ public static class ApiRoutes
     {
         public const string _uploadUserProfilePicture = "profile-picture";
         public const string _userBasicDetails = "basic";
+        public const string _userUpdateDetails = "details";
     }
 }
