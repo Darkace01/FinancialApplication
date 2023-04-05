@@ -3,7 +3,7 @@
 public class AppConstant
 {
     public const string PublicUserRole = "User";
-    public const string PublicAppName = "Financial Application";
+    public const string PublicAppName = "Income App";
 
         
     //Email Templates constants
