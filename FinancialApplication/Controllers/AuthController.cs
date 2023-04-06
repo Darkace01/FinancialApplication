@@ -1,4 +1,6 @@
-﻿namespace FinancialApplication.Controllers
+﻿using Google.Apis.Auth;
+
+namespace FinancialApplication.Controllers
 {
     [ApiVersion("1.0")]
     [Route("api/v{v:apiversion}/auth")]
@@ -456,6 +458,15 @@
                 message = "Email Confirmed.",
                 data = null
             });
+        }
+
+        [HttpPost(AuthRoutes._registerWithGoogle)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RegisterWithGoogle([FromBody] RegisterWithGoogleDTO model)
+        {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(model.token);
         }
     }
 }
