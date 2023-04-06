@@ -21,6 +21,10 @@ public class ApplicationUser : IdentityUser
     /// </summary>
     public string ProfilePictureId { get; set; }
     /// <summary>
+    /// User has signed up with google
+    /// </summary>
+    public bool ExternalAuthInWithGoogle { get; set; }
+    /// <summary>
     /// List of user expenses
     /// </summary>
     public IEnumerable<Transaction> Transactions { get; set; }

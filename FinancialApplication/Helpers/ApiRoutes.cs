@@ -11,8 +11,7 @@ public static class ApiRoutes
         public const string _resetPassword = "reset-password";
         public const string _confirmEmail = "confirm-email";
         public const string _resendConfirmationEmail = "resend-confirmation-email";
-        public const string _registerWithGoogle = "register/google";
-        public const string _loginWithGoogle = "login/google";
+        public const string _registerOrLoginWithGoogle = "register-or-login/google";
     }
 
     public static class CategoryRoutes

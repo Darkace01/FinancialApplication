@@ -1,4 +1,6 @@
 ﻿using Google.Apis.Auth;
+using Newtonsoft.Json.Linq;
+using static FinancialApplication.Helpers.ApiRoutes;
 
 namespace FinancialApplication.Controllers
 {
@@ -13,8 +15,9 @@ namespace FinancialApplication.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<AuthController> _logger;
         private readonly IEmailTemplateHelper _emailTemplate;
+        private readonly IConfiguration _config;
 
-        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IEmailTemplateHelper emailTemplate)
+        public AuthController(IJWTHelper jWTHelper, IRepositoryServiceManager repo, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IEmailTemplateHelper emailTemplate, IConfiguration config)
         {
             _jWTHelper = jWTHelper;
             _repo = repo;
@@ -22,6 +25,7 @@ namespace FinancialApplication.Controllers
             _roleManager = roleManager;
             _logger = logger;
             _emailTemplate = emailTemplate;
+            _config = config;
         }
 
         [HttpPost(AuthRoutes._login)]
@@ -65,28 +69,7 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var token = _jWTHelper.GenerateToken(user, userRoles);
-            var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
-
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<LoginResponseDTO>()
-            {
-                statusCode = StatusCodes.Status200OK,
-                hasError = false,
-                message = "Authrorized",
-                data = new LoginResponseDTO()
-                {
-                    accessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                    emailAddress = user.Email,
-                    firstName = user.FirstName,
-                    lastName = user.LastName,
-                    phoneNumber = user.PhoneNumber,
-                    profilePictureUrl = user.ProfilePictureUrl,
-                    userId = user.Id,
-                    ClientBalance = clientBalance,
-                    ProfilePictureId = user.ProfilePictureId,
-                }
-            });
+            return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(user));
         }
 
         [HttpPost(AuthRoutes._register)]
@@ -129,7 +112,8 @@ namespace FinancialApplication.Controllers
                 FirstName = model.firstName,
                 LastName = model.lastName,
                 PhoneNumber = model.phoneNumber,
-                EmailConfirmed = false
+                EmailConfirmed = false,
+                ExternalAuthInWithGoogle = true
             };
             if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
             {
@@ -370,7 +354,7 @@ namespace FinancialApplication.Controllers
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResendEmailConfirmationCode([FromBody] RequestEmailConfirmationDTO model)
         {
-            if(model == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (model == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
                 hasError = true,
@@ -417,7 +401,7 @@ namespace FinancialApplication.Controllers
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> VerifyEmailConfirmationCode([FromBody] EmailConfirmationDTO model)
         {
-            if(model  == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (model == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
                 hasError = true,
@@ -443,7 +427,7 @@ namespace FinancialApplication.Controllers
             });
 
             var isCodeValid = await _repo.UserService.VerifyUserEmail(userExist.Id, model.code);
-            if(isCodeValid == false) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            if (isCodeValid == false) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
                 hasError = true,
@@ -460,13 +444,140 @@ namespace FinancialApplication.Controllers
             });
         }
 
-        [HttpPost(AuthRoutes._registerWithGoogle)]
+        [HttpPost(AuthRoutes._registerOrLoginWithGoogle)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RegisterWithGoogle([FromBody] RegisterWithGoogleDTO model)
+        public async Task<IActionResult> RegisterOrLoginWithGoogle([FromBody] RegisterWithGoogleDTO model)
         {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(model.token);
+            if (model == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Invalid payload",
+                data = null
+            });
+
+            if (string.IsNullOrWhiteSpace(model.token)) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Invalid payload",
+                data = null
+            });
+
+            var response = await ValidateUserTokenForGoogle(model.token);
+
+            if (response.hasError == true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+            {
+                statusCode = StatusCodes.Status400BadRequest,
+                hasError = true,
+                message = "Expired Token Please Try Again Later",
+                data = null
+            });
+
+            var userExist = await _userManager.FindByEmailAsync(response.data.Email);
+
+            if (userExist != null)
+            {
+                // Return a token for the user
+                if (userExist.ExternalAuthInWithGoogle == false)
+                {
+                    userExist.ExternalAuthInWithGoogle = true;
+                    userExist.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(userExist);
+                }
+                return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(userExist));
+            }
+
+            //Create a user if the user doesn't exist
+            ApplicationUser user = new()
+            {
+                Email = response.data.Email,
+                EmailConfirmed = true,
+                FirstName = response.data.GivenName,
+                LastName = response.data.FamilyName,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = response.data.Email,
+                ExternalAuthInWithGoogle = true,
+                ProfilePictureUrl = response.data.Picture
+            };
+
+            if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(AppConstant.PublicUserRole));
+            }
+
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded != true)
+            {
+                return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+                {
+                    statusCode = StatusCodes.Status400BadRequest,
+                    hasError = true,
+                    message = $"User creation failed. {result?.Errors?.FirstOrDefault().Description}",
+                    data = null
+                });
+            }
+
+            await _userManager.AddToRoleAsync(user, AppConstant.PublicUserRole);
+            return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(user));
         }
+
+        #region Private Methods
+        private async Task<ApiResponse<GoogleJsonWebSignature.Payload>> ValidateUserTokenForGoogle(string token)
+        {
+            var mobileClientId = _config["Authentication:Google:MobileClientId"];
+            GoogleJsonWebSignature.Payload payload = null;
+            bool isValidToken = false;
+            var message = string.Empty;
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(token);
+                if (payload != null && (string)payload?.Audience == mobileClientId)
+                {
+                    isValidToken = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+
+            var response = new ApiResponse<GoogleJsonWebSignature.Payload>()
+            {
+                hasError = !isValidToken,
+                data = payload,
+                message = message
+            };
+            return response;
+        }
+
+        private async Task<ApiResponse<LoginResponseDTO>> GenerateLoginTokenandResponseForUser(ApplicationUser user)
+        {
+            var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authToken = _jWTHelper.GenerateToken(user, userRoles);
+            return new ApiResponse<LoginResponseDTO>()
+            {
+                statusCode = StatusCodes.Status200OK,
+                hasError = false,
+                message = "Authrorized",
+                data = new LoginResponseDTO()
+                {
+                    accessToken = new JwtSecurityTokenHandler().WriteToken(authToken),
+                    emailAddress = user.Email,
+                    firstName = user.FirstName,
+                    lastName = user.LastName,
+                    phoneNumber = user.PhoneNumber,
+                    profilePictureUrl = user.ProfilePictureUrl,
+                    userId = user.Id,
+                    ClientBalance = clientBalance,
+                    ProfilePictureId = user.ProfilePictureId,
+                }
+            };
+        }
+        #endregion
+
     }
 }
