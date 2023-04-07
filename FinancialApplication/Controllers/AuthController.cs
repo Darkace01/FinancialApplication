@@ -468,6 +468,7 @@ namespace FinancialApplication.Controllers
 
             var response = await ValidateUserTokenForGoogle(model.token);
 
+            _logger.LogError(model.token);
             if (response.hasError == true) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
@@ -545,6 +546,7 @@ namespace FinancialApplication.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, token);
                 message = ex.Message;
             }
 
