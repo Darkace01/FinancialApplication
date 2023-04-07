@@ -130,7 +130,12 @@ public static class ServiceExtensions
     /// <param name="configuration"></param>
     public static void ConfigureExternalAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication().AddGoogle(googleOptions =>
+        //services.AddAuthentication().AddGoogle(googleOptions =>
+        //{
+        //    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+        //    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+        //});
+        services.AddAuthentication().AddGoogleOpenIdConnect(googleOptions =>
         {
             googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
             googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];

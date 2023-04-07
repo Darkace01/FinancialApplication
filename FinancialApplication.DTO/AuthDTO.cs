@@ -42,6 +42,12 @@ public class RegisterDTO
     public string phoneNumber { get; set; }
 }
 
+public class RegisterWithGoogleDTO
+{
+    [Required]
+    public string token { get; set; }
+}
+
 public class ChangePasswordDTO
 {
     public string username { get; set; }
