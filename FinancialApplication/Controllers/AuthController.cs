@@ -528,12 +528,16 @@ namespace FinancialApplication.Controllers
         private async Task<ApiResponse<GoogleJsonWebSignature.Payload>> ValidateUserTokenForGoogle(string token)
         {
             var mobileClientId = _config["Authentication:Google:MobileClientId"];
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                ExpirationTimeClockTolerance = TimeSpan.FromHours(1)
+            };
             GoogleJsonWebSignature.Payload payload = null;
             bool isValidToken = false;
             var message = string.Empty;
             try
             {
-                payload = await GoogleJsonWebSignature.ValidateAsync(token);
+                payload = await GoogleJsonWebSignature.ValidateAsync(token,settings);
                 if (payload != null && (string)payload?.Audience == mobileClientId)
                 {
                     isValidToken = true;
