@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using static FinancialApplication.Helpers.ApiRoutes;
 
@@ -536,9 +537,11 @@ namespace FinancialApplication.Controllers
             GoogleJsonWebSignature.Payload payload = null;
             bool isValidToken = false;
             var message = string.Empty;
+            _logger.LogError(mobileClientId);
             try
             {
                 payload = await GoogleJsonWebSignature.ValidateAsync(token,settings);
+                _logger.LogError(payload.ToString());
                 if (payload != null && (string)payload?.Audience == mobileClientId)
                 {
                     isValidToken = true;
