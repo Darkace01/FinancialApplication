@@ -112,7 +112,8 @@ public class AuthController : ControllerBase
             LastName = model.lastName,
             PhoneNumber = model.phoneNumber,
             EmailConfirmed = false,
-            ExternalAuthInWithGoogle = true
+            ExternalAuthInWithGoogle = true,
+            RecievePushNotification = true,
         };
         if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
         {
@@ -498,7 +499,8 @@ public class AuthController : ControllerBase
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = response.data.Email,
             ExternalAuthInWithGoogle = true,
-            ProfilePictureUrl = response.data.Picture
+            ProfilePictureUrl = response.data.Picture,
+            RecievePushNotification = true
         };
 
         if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
