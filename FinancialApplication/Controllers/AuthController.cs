@@ -175,7 +175,7 @@ namespace FinancialApplication.Controllers
                 data = null
             });
 
-            var userExists = await _userManager.FindByNameAsync(model.username);
+            var userExists = await _userManager.FindByEmailAsync(model.email);
             if (userExists is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
             {
                 statusCode = StatusCodes.Status400BadRequest,
