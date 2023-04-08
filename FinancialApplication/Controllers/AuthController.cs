@@ -223,7 +223,6 @@ public class AuthController : ControllerBase
                 data = null
             });
         }
-
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
             statusCode = StatusCodes.Status200OK,
