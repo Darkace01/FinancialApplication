@@ -7,6 +7,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     private IEmailService _emailService;
     private IUserService _userService;
     private IFileStorageService _fileStorageService;
+    private INotificationService _notificationService;
 
 
     private readonly FinancialApplicationDbContext _context;
@@ -77,6 +78,18 @@ public class RepositoryServiceManager : IRepositoryServiceManager
                 _fileStorageService = new FileStorageService(_cloudinary);
             }
             return _fileStorageService;
+        }
+    }
+
+    public INotificationService NotificationService
+    {
+        get
+        {
+            if (_notificationService == null)
+            {
+                _notificationService = new NotificationService(_context);
+            }
+            return _notificationService;
         }
     }
 }

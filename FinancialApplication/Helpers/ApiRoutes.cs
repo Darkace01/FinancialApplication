@@ -37,4 +37,11 @@ public static class ApiRoutes
         public const string _userBasicDetails = "basic";
         public const string _userUpdateDetails = "details";
     }
+
+    public static class NotificationRoutes
+    {
+        public const string _saveUserNotificationToken = "save-token";
+        public const string _turnOnNotification = "turn-on";
+        public const string _turnOffNotification = "turn-off";
+    }
 }

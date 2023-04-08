@@ -13,7 +13,7 @@ public class UserService : IUserService
     /// Generate a random 6 digit code for user confirmation
     /// </summary>
     /// <param name="userId"></param>
-    /// <returns></returns>
+    /// <returns> Confirmation Code </returns>
     public async Task<string> GenerateUserConfirmationCode(string userId)
     {
         var code = CommonHelpers.GenerateRandomNumbers(6).ToString();

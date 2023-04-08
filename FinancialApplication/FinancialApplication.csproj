@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.6.0" />
+		<PackageReference Include="Expo.Server.SDK" Version="1.0.2" />
 		<PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.60.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.14" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />

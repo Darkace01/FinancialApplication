@@ -99,6 +99,21 @@ public class FinancialApplicationDbContext : IdentityDbContext<ApplicationUser, 
 
         // ApplicationUser
         modelBuilder.Entity<ApplicationUser>()
+            .Property(au => au.FirstName)
+            .HasMaxLength(250);
+        modelBuilder.Entity<ApplicationUser>()
+            .Property(au => au.LastName)
+            .HasMaxLength(250);
+        modelBuilder.Entity<ApplicationUser>()
+            .Property(au => au.ProfilePictureUrl)
+            .HasMaxLength(500);
+        modelBuilder.Entity<ApplicationUser>()
+            .Property(au => au.ExpoNotificationToken)
+            .HasMaxLength(250);
+        modelBuilder.Entity<ApplicationUser>()
+            .Property(au => au.ProfilePictureId)
+            .HasMaxLength(50);
+        modelBuilder.Entity<ApplicationUser>()
             .HasMany(u => u.Transactions)
             .WithOne(t => t.User)
             .HasForeignKey(t => t.UserId)
