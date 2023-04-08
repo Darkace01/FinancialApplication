@@ -42,6 +42,8 @@ public class AuthController : ControllerBase
             message = "Invalid authentication request",
             data = null
         });
+        PushNotificationHelper pushNotificationHelper = new(_repo);
+        await pushNotificationHelper.SendUsersPushNotification();
         var user = await _userManager.FindByNameAsync(model.username);
         user ??= await _userManager.FindByEmailAsync(model.username);
         if (user == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
