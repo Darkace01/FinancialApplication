@@ -43,5 +43,6 @@ public static class ApiRoutes
         public const string _saveUserNotificationToken = "token";
         public const string _turnOnNotification = "turn-on";
         public const string _turnOffNotification = "turn-off";
+        public const string _sendTestNotificationToAllUsers = "test";
     }
 }
