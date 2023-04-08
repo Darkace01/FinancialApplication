@@ -539,7 +539,7 @@ public class AuthController : ControllerBase
         var message = string.Empty;
         try
         {
-            payload = await GoogleJsonWebSignature.ValidateAsync(token,settings);
+            payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
             if (payload != null && (string)payload?.Audience == mobileClientId)
             {
                 isValidToken = true;

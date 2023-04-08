@@ -50,7 +50,7 @@ public class RegisterWithGoogleDTO
 
 public class ChangePasswordDTO
 {
-    public string email { get; set; }
+    public string username { get; set; }
     public string currentPassword { get; set; }
     public string newPassword { get; set; }
 }
