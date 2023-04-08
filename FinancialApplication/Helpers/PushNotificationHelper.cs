@@ -1,6 +1,6 @@
 ﻿using Expo.Server.Client;
 using Expo.Server.Models;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace FinancialApplication.Helpers;
 
@@ -14,7 +14,7 @@ public class PushNotificationHelper
         _repo = repo;
     }
 
-    public async Task SendUsersPushNotification()
+    public async Task<string> SendUsersPushNotification()
     {
         var expoSDKClient = new PushApiClient();
         var usersNotificationToken = await _repo.NotificationService.GetAllEnabledNotificationUsersNotificationTokens();
@@ -35,5 +35,8 @@ public class PushNotificationHelper
                 _logger.LogError(error.ErrorMessage);
             }
         }
+
+        var responseString = JsonSerializer.Serialize(result);
+        return responseString;
     }
 }
