@@ -7,7 +7,6 @@ namespace FinancialApplication.Helpers;
 public class PushNotificationHelper
 {
     private readonly IRepositoryServiceManager _repo;
-    private readonly ILogger<PushNotificationHelper> _logger;
 
     public PushNotificationHelper(IRepositoryServiceManager repo)
     {
@@ -32,7 +31,6 @@ public class PushNotificationHelper
         {
             foreach (var error in result.PushTicketErrors)
             {
-                _logger.LogError(error.ErrorMessage);
             }
         }
 
