@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace FinancialApplication.Helpers;
 
-public class PushNotificationHelper
+public class PushNotificationHelper : IPushNotificationHelper
 {
     private readonly IRepositoryServiceManager _repo;
 
