@@ -10,6 +10,9 @@
 		<PackageReference Include="Azure.Identity" Version="1.6.0" />
 		<PackageReference Include="Expo.Server.SDK" Version="1.0.2" />
 		<PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.60.0" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.34" />
+		<PackageReference Include="Hangfire.Core" Version="1.7.34" />
+		<PackageReference Include="Hangfire.InMemory" Version="0.3.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.14" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />

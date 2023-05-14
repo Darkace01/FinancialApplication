@@ -31,7 +31,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// Received push notifications. If false, user will not receive push notifications.
     /// </summary>
-    public bool RecievePushNotification { get; set; }
+    public bool ReceivePushNotification { get; set; }
     /// <summary>
     /// List of user expenses
     /// </summary>

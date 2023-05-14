@@ -113,7 +113,7 @@ public class AuthController : ControllerBase
             PhoneNumber = model.phoneNumber,
             EmailConfirmed = false,
             ExternalAuthInWithGoogle = true,
-            RecievePushNotification = true,
+            ReceivePushNotification = true,
         };
         if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
         {
@@ -500,7 +500,7 @@ public class AuthController : ControllerBase
             UserName = response.data.Email,
             ExternalAuthInWithGoogle = true,
             ProfilePictureUrl = response.data.Picture,
-            RecievePushNotification = true
+            ReceivePushNotification = true
         };
 
         if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
@@ -566,7 +566,7 @@ public class AuthController : ControllerBase
         {
             statusCode = StatusCodes.Status200OK,
             hasError = false,
-            message = "Authrorized",
+            message = "Authorized",
             data = new LoginResponseDTO()
             {
                 accessToken = new JwtSecurityTokenHandler().WriteToken(authToken),
@@ -578,6 +578,8 @@ public class AuthController : ControllerBase
                 userId = user.Id,
                 ClientBalance = clientBalance,
                 ProfilePictureId = user.ProfilePictureId,
+                ExpoNotificationTokenid = user.ExpoNotificationToken,
+                ReceivePushNotification = user.ReceivePushNotification,
             }
         };
     }

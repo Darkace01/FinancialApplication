@@ -119,7 +119,7 @@ public class NotificationController : ControllerBase
     public async Task<IActionResult> SendTestNotificationToAllUsers()
     {
         PushNotificationHelper pushNotificationHelper = new(_repo);
-        var response = await pushNotificationHelper.SendUsersPushNotification();
+        var response = await pushNotificationHelper.SendUsersTestPushNotification();
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
             statusCode = StatusCodes.Status200OK,
