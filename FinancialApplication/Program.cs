@@ -53,8 +53,8 @@ var app = builder.Build();
 // Recurring Jobs
 using (var scope = app.Services.CreateScope())
 {
-    var _pushNotificationHelper = scope.ServiceProvider.GetRequiredService<IPushNotificationHelper>();
-    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var _pushNotificationHelper = scope.ServiceProvider.GetService<IPushNotificationHelper>();
+    var recurringJobManager = scope.ServiceProvider.GetService<IRecurringJobManager>();
     recurringJobManager.AddOrUpdate("9am", () => _pushNotificationHelper.Send9amPushNotification(), Cron.Daily(9, 00));
     recurringJobManager.AddOrUpdate("12pm", () => _pushNotificationHelper.Send12pmPushNotification(), Cron.Daily(12, 00));
     recurringJobManager.AddOrUpdate("3pm", () => _pushNotificationHelper.Send3pmPushNotification(), Cron.Daily(15, 00));
