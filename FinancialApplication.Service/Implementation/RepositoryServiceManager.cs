@@ -14,11 +14,11 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     private readonly IConfiguration _config;
     private readonly Cloudinary _cloudinary;
 
-    public RepositoryServiceManager(FinancialApplicationDbContext context, IConfiguration config, Cloudinary cloudinary)
+    public RepositoryServiceManager(FinancialApplicationDbContext context, IConfiguration config)
     {
         _context = context;
         _config = config;
-        _cloudinary = cloudinary;
+        _cloudinary = new Cloudinary();
     }
 
     public ITransactionService TransactionService
