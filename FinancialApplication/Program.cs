@@ -1,4 +1,6 @@
 using Azure.Identity;
+using Hangfire;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -62,4 +64,18 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseHangfireDashboard("/cron/jobs");
+
+// Recurring Jobs
+var _repo = app.Services.GetService<IRepositoryServiceManager>();
+PushNotificationHelper pushNotificationHelper = new(_repo);
+RecurringJob.AddOrUpdate(() => pushNotificationHelper.Send9amPushNotification(), Cron.Daily(9, 00));
+RecurringJob.AddOrUpdate(() => pushNotificationHelper.Send12pmPushNotification(), Cron.Daily(12, 00));
+RecurringJob.AddOrUpdate(() => pushNotificationHelper.Send3pmPushNotification(), Cron.Daily(15, 00));
+RecurringJob.AddOrUpdate(() => pushNotificationHelper.Send6pmPushNotification(), Cron.Daily(18, 00));
+
+
 app.Run();
+
+
+
