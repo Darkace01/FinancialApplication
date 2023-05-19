@@ -33,7 +33,7 @@ public class NotificationService : INotificationService
     /// <returns>List of notification tokens</returns>
     public async Task<List<string>> GetAllEnabledNotificationUsersNotificationTokens()
     {
-        var users = await _context.Users.AsNoTracking().Where(x => x.RecievePushNotification == true).ToListAsync();
+        var users = await _context.Users.AsNoTracking().Where(x => x.ReceivePushNotification == true).ToListAsync();
         return users.Select(x => x.ExpoNotificationToken).ToList();
     }
 
@@ -44,7 +44,7 @@ public class NotificationService : INotificationService
     /// <returns></returns>
     public async Task<string> GetUserNotificationTokenByUserId(string userId)
     {
-        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId && x.RecievePushNotification == true);
+        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId && x.ReceivePushNotification == true);
         if (user != null)
         {
             return user.ExpoNotificationToken;
@@ -62,7 +62,7 @@ public class NotificationService : INotificationService
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
         if (user != null)
         {
-            user.RecievePushNotification = true;
+            user.ReceivePushNotification = true;
             _context.Users.Update(user);
             return await _context.SaveChangesAsync() > 0;
         }
@@ -79,7 +79,7 @@ public class NotificationService : INotificationService
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
         if (user != null)
         {
-            user.RecievePushNotification = false;
+            user.ReceivePushNotification = false;
             _context.Users.Update(user);
             return await _context.SaveChangesAsync() > 0;
         }

@@ -18,6 +18,8 @@ public class UserBasicDetail
     public string userId { get; set; }
     public string profilePictureUrl { get; set; }
     public string ProfilePictureId { get; set; }
+    public string ExpoNotificationTokenid { get; set; }
+    public bool ReceivePushNotification { get; set; }
 }
 
 public class LoginResponseDTO : UserBasicDetail

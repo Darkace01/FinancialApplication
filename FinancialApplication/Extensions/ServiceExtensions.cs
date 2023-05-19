@@ -1,10 +1,7 @@
 ﻿using CloudinaryDotNet;
-using FinancialApplication.Service.Contract;
 using FinancialApplication.Service.Implementation;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Hangfire;
 using Microsoft.OpenApi.Models;
-using System.Text.Json;
 
 namespace FinancialApplication.Extensions;
 
@@ -19,6 +16,7 @@ public static class ServiceExtensions
         services.AddScoped<IRepositoryServiceManager, RepositoryServiceManager>();
         services.AddScoped<IJWTHelper, JWTHelper>();
         services.AddScoped<IEmailTemplateHelper, EmailTemplateHelper>();
+        services.AddScoped<IPushNotificationHelper, PushNotificationHelper>();
     }
 
     /// <summary>
@@ -162,5 +160,17 @@ public static class ServiceExtensions
 
             services.AddSingleton(new Cloudinary(new Account(cloudName, apiKey, apiSecret)));
         }
+    }
+
+    public static void ConfigureHangFire(this IServiceCollection services)
+    {
+        // Add Hangfire services and configure the MemoryStorage for job storage.
+        services.AddHangfire(config =>
+        {
+            config.UseInMemoryStorage();
+        });
+
+        // Add the Hangfire job scheduler.
+        services.AddHangfireServer();
     }
 }

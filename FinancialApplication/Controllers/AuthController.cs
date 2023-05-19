@@ -1,7 +1,4 @@
 ﻿using Google.Apis.Auth;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using static FinancialApplication.Helpers.ApiRoutes;
 
 namespace FinancialApplication.Controllers;
 
@@ -42,8 +39,7 @@ public class AuthController : ControllerBase
             message = "Invalid authentication request",
             data = null
         });
-        PushNotificationHelper pushNotificationHelper = new(_repo);
-        await pushNotificationHelper.SendUsersPushNotification();
+        
         var user = await _userManager.FindByNameAsync(model.username);
         user ??= await _userManager.FindByEmailAsync(model.username);
         if (user == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
@@ -116,7 +112,8 @@ public class AuthController : ControllerBase
             LastName = model.lastName,
             PhoneNumber = model.phoneNumber,
             EmailConfirmed = false,
-            ExternalAuthInWithGoogle = true
+            ExternalAuthInWithGoogle = true,
+            ReceivePushNotification = true,
         };
         if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
         {
@@ -502,7 +499,8 @@ public class AuthController : ControllerBase
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = response.data.Email,
             ExternalAuthInWithGoogle = true,
-            ProfilePictureUrl = response.data.Picture
+            ProfilePictureUrl = response.data.Picture,
+            ReceivePushNotification = true
         };
 
         if (!await _roleManager.RoleExistsAsync(AppConstant.PublicUserRole))
@@ -568,7 +566,7 @@ public class AuthController : ControllerBase
         {
             statusCode = StatusCodes.Status200OK,
             hasError = false,
-            message = "Authrorized",
+            message = "Authorized",
             data = new LoginResponseDTO()
             {
                 accessToken = new JwtSecurityTokenHandler().WriteToken(authToken),
@@ -580,6 +578,8 @@ public class AuthController : ControllerBase
                 userId = user.Id,
                 ClientBalance = clientBalance,
                 ProfilePictureId = user.ProfilePictureId,
+                ExpoNotificationTokenid = user.ExpoNotificationToken,
+                ReceivePushNotification = user.ReceivePushNotification,
             }
         };
     }

@@ -18,7 +18,7 @@ public class NotificationController : ControllerBase
         _repo = repo;
     }
 
-    [HttpGet(NotificationRoutes._saveUserNotificationToken)]
+    [HttpPost(NotificationRoutes._saveUserNotificationToken)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -60,7 +60,7 @@ public class NotificationController : ControllerBase
         });
     }
 
-    [HttpGet(NotificationRoutes._turnOffNotification)]
+    [HttpPost(NotificationRoutes._turnOffNotification)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -86,7 +86,7 @@ public class NotificationController : ControllerBase
         });
     }
 
-    [HttpGet(NotificationRoutes._turnOnNotification)]
+    [HttpPost(NotificationRoutes._turnOnNotification)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
@@ -110,6 +110,24 @@ public class NotificationController : ControllerBase
             message = "Turned on successfully.",
             data = null
         });
+    }
+
+    [HttpGet(NotificationRoutes._sendTestNotificationToAllUsers)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SendTestNotificationToAllUsers()
+    {
+        PushNotificationHelper pushNotificationHelper = new(_repo);
+        var response = await pushNotificationHelper.SendUsersTestPushNotification();
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
+        {
+            statusCode = StatusCodes.Status200OK,
+            hasError = false,
+            message = "Successfully sent notification",
+            data = response
+        });
+        
     }
     #region Helpers
     private async Task<ApplicationUser> GetUser()
