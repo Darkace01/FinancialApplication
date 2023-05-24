@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialApplication.DTO", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialApplication.Commons", "FinancialApplication.Commons\FinancialApplication.Commons.csproj", "{5EFF8A07-5D2F-42EC-A185-B95CDC2D817F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialApplication.Test", "FinancialApplication.Test\FinancialApplication.Test.csproj", "{94B7DB09-CA50-471E-A764-700C9D0BF8DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{5EFF8A07-5D2F-42EC-A185-B95CDC2D817F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EFF8A07-5D2F-42EC-A185-B95CDC2D817F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EFF8A07-5D2F-42EC-A185-B95CDC2D817F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B7DB09-CA50-471E-A764-700C9D0BF8DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B7DB09-CA50-471E-A764-700C9D0BF8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B7DB09-CA50-471E-A764-700C9D0BF8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B7DB09-CA50-471E-A764-700C9D0BF8DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
