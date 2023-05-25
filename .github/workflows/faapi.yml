@@ -32,6 +32,7 @@ jobs:
         Cloudinary.CloudName: ${{ secrets.CLOUDINARY_CLOUDNAME }}
         Cloudinary.ApiKey: ${{ secrets.CLOUDINARY_APIKEY }}
         Cloudinary.ApiSecret: ${{ secrets.CLOUDINARY_APISECRET }}
+        Cloudinary.Url: ${{ secrets.CLOUDINARY_URL }}
         Authentication.Google.ClientId: ${{ secrets.GOOGLE_CLIENTID }}
         Authentication.Google.ClientSecret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         Authentication.Google.MobileClientId: ${{ secrets.GOOGLE_MOBILE_CLIENTID }}
