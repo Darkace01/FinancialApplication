@@ -18,7 +18,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         _context = context;
         _config = config;
-        _cloudinary = new Cloudinary();
+        _cloudinary = new Cloudinary(_config["Cloudinary:Url"]);
     }
 
     public ITransactionService TransactionService
