@@ -25,10 +25,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         get
         {
-            if (_transactionService == null)
-            {
-                _transactionService = new TransactionService(_context);
-            }
+            _transactionService ??= new TransactionService(_context);
             return _transactionService;
         }
     }
@@ -37,10 +34,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         get
         {
-            if (_categoryService == null)
-            {
-                _categoryService = new CategoryService(_context);
-            }
+            _categoryService ??= new CategoryService(_context);
             return _categoryService;
         }
     }
@@ -49,10 +43,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         get
         {
-            if (_emailService == null)
-            {
-                _emailService = new SMTPMailService(_config);
-            }
+            _emailService ??= new SMTPMailService(_config);
             return _emailService;
         }
     }
@@ -61,10 +52,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         get
         {
-            if (_userService == null)
-            {
-                _userService = new UserService(_context);
-            }
+            _userService ??= new UserService(_context);
             return _userService;
         }
     }
@@ -73,10 +61,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         get
         {
-            if (_fileStorageService == null)
-            {
-                _fileStorageService = new FileStorageService(_cloudinary);
-            }
+            _fileStorageService ??= new FileStorageService(_cloudinary);
             return _fileStorageService;
         }
     }
@@ -85,10 +70,7 @@ public class RepositoryServiceManager : IRepositoryServiceManager
     {
         get
         {
-            if (_notificationService == null)
-            {
-                _notificationService = new NotificationService(_context);
-            }
+            _notificationService ??= new NotificationService(_context);
             return _notificationService;
         }
     }
