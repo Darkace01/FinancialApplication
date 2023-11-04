@@ -27,7 +27,7 @@ public interface ITransactionService
     /// Get all transactions
     /// </summary>
     /// <returns></returns>
-    Task<IEnumerable<Transaction>> GetAll();
+    Task<IEnumerable<Transaction>> GetAll(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get all transactions by category Id
@@ -42,7 +42,7 @@ public interface ITransactionService
     /// <param name="id"></param>
     /// <param name="userId"></param>
     /// <returns></returns>
-    Task<TransactionDTO> GetByIdandUserId(int id, string userId);
+    Task<TransactionDTO> GetByIdandUserId(int id, string userId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get all transactions by user Id
@@ -57,7 +57,7 @@ public interface ITransactionService
     /// <param name="userId"></param>
     /// <param name="date"></param>
     /// <returns></returns>
-    Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId);
+    Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId, CancellationToken cancellationToken = default);
     /// <summary>
     /// Get all transactions by user Id with parameters: startDate, endDate, take, query
     /// </summary>
@@ -74,7 +74,7 @@ public interface ITransactionService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId);
+    Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId,CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get user balance for the current month
@@ -82,7 +82,7 @@ public interface ITransactionService
     /// <param name="userId"></param>
     /// <param name="date"></param>
     /// <returns></returns>
-    Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date);
+    Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update a transaction

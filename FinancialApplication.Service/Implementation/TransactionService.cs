@@ -77,9 +77,9 @@ public class TransactionService : ITransactionService
     /// Get all transactions
     /// </summary>
     /// <returns></returns>
-    public async Task<IEnumerable<Transaction>> GetAll()
+    public async Task<IEnumerable<Transaction>> GetAll(CancellationToken cancellationToken = default)
     {
-        return await _context.Transactions.AsNoTracking().ToListAsync();
+        return await _context.Transactions.AsNoTracking().ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ public class TransactionService : ITransactionService
     /// <param name="id"></param>
     /// <param name="userId"></param>
     /// <returns></returns>
-    public async Task<TransactionDTO> GetByIdandUserId(int id, string userId)
+    public async Task<TransactionDTO> GetByIdandUserId(int id, string userId, CancellationToken cancellationToken = default)
     {
         return await _context.Transactions.Include(x => x.Category).AsNoTracking()
             .Select(transaction => new TransactionDTO()
@@ -167,7 +167,7 @@ public class TransactionService : ITransactionService
                 UserId = transaction.UserId,
                 InFlow = transaction.InFlow
             })
-            .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
+            .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId,cancellationToken);
     }
     /// <summary>
     /// Get all transactions by user Id and category Id
@@ -176,9 +176,9 @@ public class TransactionService : ITransactionService
     /// <param name="categoryId"></param>
     /// <returns></returns>
 
-    public async Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId)
+    public async Task<IEnumerable<Transaction>> GetByUserAndCategory(string userId, int categoryId, CancellationToken cancellationToken = default)
     {
-        return await _context.Transactions.Where(e => e.UserId == userId && e.CategoryId == categoryId).AsNoTracking().ToListAsync();
+        return await _context.Transactions.Where(e => e.UserId == userId && e.CategoryId == categoryId).AsNoTracking().ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -187,9 +187,9 @@ public class TransactionService : ITransactionService
     /// <param name="userId"></param>
     /// <param name="date"></param>
     /// <returns></returns>
-    public async Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date)
+    public async Task<ClientTransactionBalance> GetUserBalanceForTheMonth(string userId, DateTime date, CancellationToken cancellationToken = default)
     {
-        var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync();
+        var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().ToListAsync(cancellationToken);
         var totalInflow = transactions.Where(x => x.InFlow == true && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
         var totalOutflow = transactions.Where(x => x.InFlow == false && x.DateCreated.Month == date.Month && x.DateCreated.Year == date.Year).Sum(x => x.Amount);
         var balance = totalInflow - totalOutflow;
@@ -210,7 +210,7 @@ public class TransactionService : ITransactionService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    public async Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId)
+    public async Task<List<ClientTransactionMonthlyBalance>> GetUserBalanceForEveryMonthFromJanuaryToDecember(string userId,CancellationToken cancellationToken = default)
     {
         var dateRange = Enumerable.Range(1, 12).Select(x => new DateTime(DateTime.Now.Year, x, 1)).ToList();
         var transactions = await _context.Transactions.Where(e => e.UserId == userId).AsNoTracking().Select(x => new
@@ -218,7 +218,7 @@ public class TransactionService : ITransactionService
             x.Amount,
             x.DateCreated,
             x.InFlow
-        }).ToListAsync();
+        }).ToListAsync(cancellationToken);
         var balanceList = new List<ClientTransactionMonthlyBalance>();
         foreach (var date in dateRange)
         {

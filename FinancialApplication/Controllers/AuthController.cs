@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<LoginResponseDTO>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login([FromBody] LoginDTO model)
+    public async Task<IActionResult> Login([FromBody] LoginDTO model, CancellationToken cancellationToken)
     {
         if (model is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
@@ -68,7 +68,7 @@ public class AuthController : ControllerBase
             data = null
         });
 
-        return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(user));
+        return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(user, cancellationToken));
     }
 
     [HttpPost(AuthRoutes._register)]
@@ -447,7 +447,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RegisterOrLoginWithGoogle([FromBody] RegisterWithGoogleDTO model)
+    public async Task<IActionResult> RegisterOrLoginWithGoogle([FromBody] RegisterWithGoogleDTO model, CancellationToken cancellationToken)
     {
         if (model == null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<string>()
         {
@@ -486,7 +486,7 @@ public class AuthController : ControllerBase
                 userExist.EmailConfirmed = true;
                 await _userManager.UpdateAsync(userExist);
             }
-            return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(userExist));
+            return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(userExist,cancellationToken));
         }
 
         //Create a user if the user doesn't exist
@@ -521,7 +521,7 @@ public class AuthController : ControllerBase
         }
 
         await _userManager.AddToRoleAsync(user, AppConstant.PublicUserRole);
-        return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(user));
+        return StatusCode(StatusCodes.Status200OK, await GenerateLoginTokenandResponseForUser(user, cancellationToken));
     }
 
     #region Private Methods
@@ -557,9 +557,9 @@ public class AuthController : ControllerBase
         return response;
     }
 
-    private async Task<ApiResponse<LoginResponseDTO>> GenerateLoginTokenandResponseForUser(ApplicationUser user)
+    private async Task<ApiResponse<LoginResponseDTO>> GenerateLoginTokenandResponseForUser(ApplicationUser user, CancellationToken cancellationToken)
     {
-        var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
+        var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now,cancellationToken);
         var userRoles = await _userManager.GetRolesAsync(user);
         var authToken = _jWTHelper.GenerateToken(user, userRoles);
         return new ApiResponse<LoginResponseDTO>()

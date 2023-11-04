@@ -196,10 +196,10 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<TransactionDTO>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUserTransaction(int transactionId)
+    public async Task<IActionResult> GetUserTransaction(int transactionId, CancellationToken cancellationToken)
     {
         var user = await GetUser();
-        var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id);
+        var transaction = await _repo.TransactionService.GetByIdandUserId(transactionId, user.Id,cancellationToken);
 
         if (transaction is null) return StatusCode(StatusCodes.Status200OK, new ApiResponse<TransactionDTO>()
         {
@@ -230,10 +230,10 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<ClientTransactionBalance>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUserTransactionBalance()
+    public async Task<IActionResult> GetUserTransactionBalance(CancellationToken cancellationToken)
     {
         var user = await GetUser();
-        var clientTransactionBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
+        var clientTransactionBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now, cancellationToken);
 
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<ClientTransactionBalance>()
         {
@@ -248,10 +248,10 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<List<ClientTransactionMonthlyBalance>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUserBalanceForEveryMonthFromJanuaryToDecember()
+    public async Task<IActionResult> GetUserBalanceForEveryMonthFromJanuaryToDecember(CancellationToken cancellationToken)
     {
         var user = await GetUser();
-        var userMonthlyTransactionBalance = await _repo.TransactionService.GetUserBalanceForEveryMonthFromJanuaryToDecember(user.Id);
+        var userMonthlyTransactionBalance = await _repo.TransactionService.GetUserBalanceForEveryMonthFromJanuaryToDecember(user.Id,cancellationToken);
 
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<List<ClientTransactionMonthlyBalance>>()
         {
@@ -266,15 +266,15 @@ public class TransactionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ApiResponse<List<DashboardTransactionandBalance>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetUserDashboard()
+    public async Task<IActionResult> GetUserDashboard(CancellationToken cancellationToken)
     {
         var user = await GetUser();
         var startDate = DateTime.MinValue;
         var endDate = DateTime.MaxValue;
         var total = 5;
         var transactions = await _repo.TransactionService.GetByUserWithParameters(user.Id, startDate, endDate, total, "");
-        var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now);
-        var userMonthlyTransactionBalance = await _repo.TransactionService.GetUserBalanceForEveryMonthFromJanuaryToDecember(user.Id);
+        var clientBalance = await _repo.TransactionService.GetUserBalanceForTheMonth(user.Id, DateTime.Now, cancellationToken);
+        var userMonthlyTransactionBalance = await _repo.TransactionService.GetUserBalanceForEveryMonthFromJanuaryToDecember(user.Id,cancellationToken);
 
         var dashboardTransactionandBalance = new DashboardTransactionandBalance()
         {
