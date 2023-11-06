@@ -528,6 +528,7 @@ public class AuthController : ControllerBase
     private async Task<ApiResponse<GoogleJsonWebSignature.Payload>> ValidateUserTokenForGoogle(string token)
     {
         var mobileClientId = _config["Authentication:Google:MobileClientId"];
+        var webClientId = _config["Authentication:Google:ClientId"];
         var settings = new GoogleJsonWebSignature.ValidationSettings()
         {
             ExpirationTimeClockTolerance = TimeSpan.FromHours(1)
@@ -538,7 +539,7 @@ public class AuthController : ControllerBase
         try
         {
             payload = await GoogleJsonWebSignature.ValidateAsync(token, settings);
-            if (payload != null && (string)payload?.Audience == mobileClientId)
+            if (payload != null && ((string?)payload?.Audience == mobileClientId || (string?)payload?.Audience == webClientId))
             {
                 isValidToken = true;
             }
