@@ -11,13 +11,13 @@ env:
   AZURE_APIM_SERVICENAME: FinancialApplicationapi
   AZURE_APIM_API_ID: FinancialApplication
   AZURE_APIM_APPSERVICEURL: https://faapi.azurewebsites.net
-  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 7.0.x
-  SWASHBUCKLE_DOTNET_CORE_VERSION: 7.0.x
+  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 8.0.x
+  SWASHBUCKLE_DOTNET_CORE_VERSION: 8.0.x
   API_IMPORT_SPECIFICATION_PATH: FinancialApplication/publish/swagger.json
-  API_IMPORT_DLL: FinancialApplication/bin/Release/net7.0/FinancialApplication.dll
+  API_IMPORT_DLL: FinancialApplication/bin/Release/net8.0/FinancialApplication.dll
   API_IMPORT_VERSION: v1
   CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 7.0.x
+  DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: FinancialApplication
 jobs:
   build:
