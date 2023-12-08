@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -37,4 +37,51 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+</Project>
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>a3f280d4-bc98-4b48-8eeb-14737ef99a32</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Identity" Version="1.10.2" />
+		<PackageReference Include="Expo.Server.SDK" Version="1.0.2" />
+		<PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.60.0" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.1" />
+		<PackageReference Include="Hangfire.Core" Version="1.8.1" />
+		<PackageReference Include="Hangfire.InMemory" Version="0.4.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="6.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\FinancialApplication.Commons\FinancialApplication.Commons.csproj" />
+	  <ProjectReference Include="..\FinancialApplication.Data\FinancialApplication.Data.csproj" />
+	  <ProjectReference Include="..\FinancialApplication.DTO\FinancialApplication.DTO.csproj" />
+	  <ProjectReference Include="..\FinancialApplication.Service\FinancialApplication.Service.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="EmailTemplates\EmailConfirmation.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="EmailTemplates\PasswordReset.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="EmailTemplates\PasswordResetConfirmation.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
